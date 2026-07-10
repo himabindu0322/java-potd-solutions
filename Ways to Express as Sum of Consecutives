@@ -1,0 +1,22 @@
+class Solution {
+    public int getCount(int n) {
+        int count = 0;
+        
+        // Multiply n by 2 to work with integer divisions easily
+        long target = 2L * n;
+        
+        // Since we need 2 or more consecutive numbers, k starts at 2
+        for (long k = 2; k * (k - 1) < target; k++) {
+            // Check if k is a factor of 2n
+            if (target % k == 0) {
+                // Check if (2n/k - k + 1) is even
+                long numerator = (target / k) - k + 1;
+                if (numerator % 2 == 0) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+}
