@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    // Fast divisor counting function: O(sqrt(x))
+    private static int countDivisors(long x) {
+        int count = 0;
+        long sqrt = (long) Math.sqrt(x);
+        for (long i = 1; i <= sqrt; i++) {
+            if (x % i == 0) {
+                if (i * i == x) {
+                    count += 1;
+                } else {
+                    count += 2;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        
+        // Cache array to store the answer for each N from 1 to 1000
+        long[] ans = new long[1001];
+        int maxFilled = 0;
+        
+        long k = 1;
+        while (maxFilled < 1000) {
+            long triangleNum = (k * (k + 1)) / 2;
+            int divisors = countDivisors(triangleNum);
+            
+            // Fill answers for all indices below this divisor count
+            // since this is the first triangle number to exceed those thresholds
+            int limit = Math.min(divisors - 1, 1000);
+            while (maxFilled <= limit) {
+                ans[maxFilled] = triangleNum;
+                maxFilled++;
+            }
+            k++;
+        }
+        
+        if (in.hasNextInt()) {
+            int t = in.nextInt();
+            while (t-- > 0) {
+                int n = in.nextInt();
+                System.out.println(ans[n]);
+            }
+        }
+        in.close();
+    }
+}
