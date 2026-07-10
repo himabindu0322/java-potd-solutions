@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class Main {
+    public static void userLogic(int n, int[] arr) {
+        // Step 1: Find the maximum team number to size our frequency array dynamically,
+        // or use the max constraint (10^5).
+        int maxTeamNum = 0;
+        for (int team : arr) {
+            if (team > maxTeamNum) {
+                maxTeamNum = team;
+            }
+        }
+
+        // Step 2: Count frequencies of each team
+        int[] freq = new int[maxTeamNum + 1];
+        int maxPlayers = 0;
+        for (int team : arr) {
+            freq[team]++;
+            if (freq[team] > maxPlayers) {
+                maxPlayers = freq[team];
+            }
+        }
+
+        // Step 3: Print all teams with the maximum frequency in ascending order
+        for (int team = 1; team <= maxTeamNum; team++) {
+            if (freq[team] == maxPlayers) {
+                System.out.println(team);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int n = scanner.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+        userLogic(n, arr);
+        scanner.close();
+    }
+}
