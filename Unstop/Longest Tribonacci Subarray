@@ -1,0 +1,56 @@
+import java.util.*;
+
+public class Main {
+    public static int longestTribonacciSubarray(int n, int[] arr) {
+        // Step 1: Precompute all Tribonacci numbers up to the max constraint (10^5)
+        Set<Integer> tribonacciSet = new HashSet<>();
+        
+        int first = 0;
+        int second = 1;
+        int third = 1;
+        
+        tribonacciSet.add(first);
+        tribonacciSet.add(second);
+        tribonacciSet.add(third);
+        
+        int limit = 100000;
+        while (true) {
+            int next = first + second + third;
+            if (next > limit) {
+                break;
+            }
+            tribonacciSet.add(next);
+            first = second;
+            second = third;
+            third = next;
+        }
+        
+        // Step 2: Linear scan to find the longest contiguous subarray
+        int maxLength = 0;
+        int currentLength = 0;
+        
+        for (int i = 0; i < n; i++) {
+            if (tribonacciSet.contains(arr[i])) {
+                currentLength++;
+                maxLength = Math.max(maxLength, currentLength);
+            } else {
+                currentLength = 0; // Reset consecutive chain
+            }
+        }
+        
+        return maxLength;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int n = scanner.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+        int result = longestTribonacciSubarray(n, arr);
+        System.out.println(result);
+        scanner.close();
+    }
+}
