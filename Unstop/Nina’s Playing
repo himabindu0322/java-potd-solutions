@@ -1,0 +1,83 @@
+import java.util.*;
+
+class Main {
+    public static String canDivideIntoGroups(int n, int[][] cards) {
+        // Step 1: Build the adjacency list and track degrees
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        int[] degree = new int[n + 1];
+        for (int[] card : cards) {
+            int u = card[0];
+            int v = card[1];
+            
+            // Self-loops (e.g., 1 1) automatically form an odd cycle of length 1
+            if (u == v) {
+                return "NO";
+            }
+            
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+            degree[u]++;
+            degree[v]++;
+        }
+        
+        // Step 2: Every node must have a degree of exactly 2
+        for (int i = 1; i <= n; i++) {
+            if (degree[i] != 2) {
+                return "NO";
+            }
+        }
+        
+        // Step 3: Check if all cycles have an even length
+        boolean[] visited = new boolean[n + 1];
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                int cycleLength = 0;
+                int curr = i;
+                int prev = -1;
+                
+                // Traverse the simple cycle
+                while (!visited[curr]) {
+                    visited[curr] = true;
+                    cycleLength++;
+                    
+                    // Move to the next unvisited neighbor or the one that isn't 'prev'
+                    List<Integer> neighbors = adj.get(curr);
+                    int nextNode = neighbors.get(0) == prev ? neighbors.get(1) : neighbors.get(0);
+                    
+                    prev = curr;
+                    curr = nextNode;
+                }
+                
+                // If any cycle has an odd number of edges/nodes, return "NO"
+                if (cycleLength % 2 != 0) {
+                    return "NO";
+                }
+            }
+        }
+        
+        return "YES";
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int t = scanner.nextInt();
+        
+        while (t-- > 0) {
+            int n = scanner.nextInt();
+            int[][] cards = new int[n][2];
+            
+            for (int i = 0; i < n; i++) {
+                cards[i][0] = scanner.nextInt();
+                cards[i][1] = scanner.nextInt();
+            }
+            
+            System.out.println(canDivideIntoGroups(n, cards));
+        }
+        scanner.close();
+    }
+}
