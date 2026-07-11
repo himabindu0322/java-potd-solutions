@@ -1,0 +1,65 @@
+import java.util.*;
+
+public class Main {
+    public static int maxSumAfterPartitioning(int[] arr, int k) {
+        int n = arr.length;
+        // dp[i] stores the maximum sum possible for the prefix of length i
+        int[] dp = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            int maxVal = 0;
+            // Look back up to k elements to form the last subarray
+            for (int j = 1; j <= k && i - j >= 0; j++) {
+                maxVal = Math.max(maxVal, arr[i - j]);
+                dp[i] = Math.max(dp[i], dp[i - j] + maxVal * j);
+            }
+        }
+        return dp[n];
+    }
+
+    public static int sieveOfEratosthenes(int n) {
+        if (n < 2) {
+            return 0;
+        }
+        
+        boolean[] isPrime = new boolean[n + 1];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = false;
+        isPrime[1] = false;
+
+        for (int p = 2; p * p <= n; p++) {
+            if (isPrime[p]) {
+                for (int i = p * p; i <= n; i += p) {
+                    isPrime[i] = false;
+                }
+            }
+        }
+
+        int count = 0;
+        for (int i = 2; i <= n; i++) {
+            if (isPrime[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int n = scanner.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+        int k = scanner.nextInt();
+        
+        // Call user logic functions
+        int maxSum = maxSumAfterPartitioning(arr, k);
+        int primeCount = sieveOfEratosthenes(maxSum);
+        
+        // Print the result
+        System.out.println(primeCount);
+    }
+}
