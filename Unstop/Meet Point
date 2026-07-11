@@ -1,0 +1,92 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static class TreeNode {
+        int val;
+        TreeNode left, right;
+        TreeNode(int val) {
+            this.val = val;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line1 = br.readLine();
+        if (line1 == null || line1.trim().isEmpty()) return;
+        int n = Integer.parseInt(line1.trim());
+
+        String line2 = br.readLine();
+        if (line2 == null || line2.trim().isEmpty()) return;
+        String[] tokens = line2.trim().split("\\s+");
+
+        String line3 = br.readLine();
+        if (line3 == null || line3.trim().isEmpty()) return;
+        String[] pq = line3.trim().split("\\s+");
+        int pVal = Integer.parseInt(pq[0]);
+        int qVal = Integer.parseInt(pq[1]);
+
+        if (tokens.length == 0 || tokens[0].equals("N")) {
+            return;
+        }
+
+        // Map to find a node reference by its integer value
+        Map<Integer, TreeNode> valueToNode = new HashMap<>();
+        // Map to keep track of each node's parent value
+        Map<Integer, Integer> parentMap = new HashMap<>();
+
+        // Reconstruct the tree from level order using an iterative queue
+        TreeNode root = new TreeNode(Integer.parseInt(tokens[0]));
+        valueToNode.put(root.val, root);
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int index = 1;
+
+        while (!queue.isEmpty() && index < tokens.length) {
+            TreeNode curr = queue.poll();
+
+            // Process Left Child
+            if (index < tokens.length) {
+                if (!tokens[index].equals("N")) {
+                    int leftVal = Integer.parseInt(tokens[index]);
+                    curr.left = new TreeNode(leftVal);
+                    valueToNode.put(leftVal, curr.left);
+                    parentMap.put(leftVal, curr.val);
+                    queue.add(curr.left);
+                }
+                index++;
+            }
+
+            // Process Right Child
+            if (index < tokens.length) {
+                if (!tokens[index].equals("N")) {
+                    int rightVal = Integer.parseInt(tokens[index]);
+                    curr.right = new TreeNode(rightVal);
+                    valueToNode.put(rightVal, curr.right);
+                    parentMap.put(rightVal, curr.val);
+                    queue.add(curr.right);
+                }
+                index++;
+            }
+        }
+
+        // Trace Alice's path from P upwards to the root and record visited node values
+        Set<Integer> alicePath = new HashSet<>();
+        Integer current = pVal;
+        while (current != null) {
+            alicePath.add(current);
+            current = parentMap.get(current); // moves to parent value or null
+        }
+
+        // Trace Bob's path from Q upwards. The first node intersecting Alice's path is the LCA
+        current = qVal;
+        while (current != null) {
+            if (alicePath.contains(current)) {
+                System.out.println(current);
+                return;
+            }
+            current = parentMap.get(current);
+        }
+    }
+}
