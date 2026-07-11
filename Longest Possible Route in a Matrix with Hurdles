@@ -1,0 +1,45 @@
+class Solution {
+    public int longestPath(int[][] mat, int xs, int ys, int xd, int yd) {
+        // If the source or destination cell is blocked initially, no path exists.
+        if (mat[xs][ys] == 0 || mat[xd][yd] == 0) {
+            return -1;
+        }
+        
+        return solve(mat, xs, ys, xd, yd, 0);
+    }
+    
+    private int solve(int[][] mat, int r, int c, int xd, int yd, int currentLength) {
+        // Base Case: If we have reached the destination, return the current path length
+        if (r == xd && c == yd) {
+            return currentLength;
+        }
+        
+        // Mark the current cell as visited by changing 1 to 0
+        mat[r][c] = 0;
+        
+        int maxLength = -1;
+        
+        // Direction vectors for moving: Up, Down, Left, Right
+        int[] dr = {-1, 1, 0, 0};
+        int[] dc = {0, 0, -1, 1};
+        
+        for (int i = 0; i < 4; i++) {
+            int nextR = r + dr[i];
+            int nextC = c + dc[i];
+            
+            // Check boundaries and make sure the neighbor cell is valid/unvisited (1)
+            if (nextR >= 0 && nextR < mat.length && nextC >= 0 && nextC < mat[0].length && mat[nextR][nextC] == 1) {
+                int res = solve(mat, nextR, nextC, xd, yd, currentLength + 1);
+                // Keep track of the maximum path length found so far
+                if (res != -1) {
+                    maxLength = Math.max(maxLength, res);
+                }
+            }
+        }
+        
+        // Backtrack: Unmark the current cell (restore to 1) for other paths
+        mat[r][c] = 1;
+        
+        return maxLength;
+    }
+}
