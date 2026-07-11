@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    private static final int MAX = 5000000;
+    // cache[i] stores the sequence length for number i
+    private static final int[] cache = new int[MAX + 1];
+    // longestStart[i] stores the number <= i that has the longest sequence
+    private static final int[] longestStart = new int[MAX + 1];
+
+    public static void main(String[] args) throws IOException {
+        // Precomputation step
+        cache[1] = 1;
+        longestStart[1] = 1;
+        
+        int maxLen = 1;
+        int bestStart = 1;
+
+        for (int i = 2; i <= MAX; i++) {
+            int len = getCollatzLength(i);
+            
+            // If there's a tie, we want the maximum starting number (hence >=)
+            if (len >= maxLen) {
+                maxLen = len;
+                bestStart = i;
+            }
+            longestStart[i] = bestStart;
+        }
+
+        // Fast I/O to handle 10^4 test cases efficiently
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line = br.readLine();
+        if (line == null) return;
+        
+        int t = Integer.parseInt(line.trim());
+        StringBuilder sb = new StringBuilder();
+        
+        while (t-- > 0) {
+            int n = Integer.parseInt(br.readLine().trim());
+            sb.append(longestStart[n]).append("\n");
+        }
+        
+        System.out.print(sb);
+    }
+
+    // Helper method to find Collatz length with caching
+    private static int getCollatzLength(long n) {
+        if (n <= MAX && cache[(int) n] != 0) {
+            return cache[(int) n];
+        }
+
+        int len;
+        // Optimization: combine odd step (3n + 1) and subsequent even step into one: (3n + 1) / 2
+        if ((n & 1) == 0) {
+            len = 1 + getCollatzLength(n >> 1);
+        } else {
+            len = 2 + getCollatzLength((3 * n + 1) >> 1);
+        }
+
+        // Only cache if within bounds
+        if (n <= MAX) {
+            cache[(int) n] = len;
+        }
+        return len;
+    }
+}
