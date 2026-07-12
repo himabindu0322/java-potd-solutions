@@ -1,0 +1,38 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        long MOD = 1_000_000_007L;
+        
+        // Define the maximum possible dimension based on standard problem constraints (typically up to 500)
+        int MAX = 500;
+        long[][] dp = new long[MAX + 1][MAX + 1];
+        
+        // Base case: Only 1 way to stay at the starting point, or move along the edges
+        for (int i = 0; i <= MAX; i++) {
+            dp[i][0] = 1;
+            dp[0][i] = 1;
+        }
+        
+        // Precompute the grid values using dynamic programming
+        for (int i = 1; i <= MAX; i++) {
+            for (int j = 1; j <= MAX; j++) {
+                dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;
+            }
+        }
+        
+        // Read test cases
+        if (scanner.hasNextInt()) {
+            int t = scanner.nextInt();
+            while (t-- > 0) {
+                int n = scanner.nextInt();
+                int m = scanner.nextInt();
+                System.out.println(dp[n][m]);
+            }
+        }
+        scanner.close();
+    }
+}
