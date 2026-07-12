@@ -1,0 +1,43 @@
+import java.util.Scanner;
+
+public class Main {
+    private static final int MOD = 1000000007;
+
+    public static int homogenousSubstring(String s) {
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+
+        long totalCount = 0;
+        long currentStreak = 0;
+        char prevChar = ' ';
+
+        for (int i = 0; i < s.length(); i++) {
+            char currentChar = s.charAt(i);
+
+            // If it matches the previous character, extend the streak. 
+            // Otherwise, reset the streak to 1.
+            if (currentChar == prevChar) {
+                currentStreak++;
+            } else {
+                currentStreak = 1;
+            }
+
+            // Add the current streak count to the total
+            totalCount = (totalCount + currentStreak) % MOD;
+            prevChar = currentChar;
+        }
+
+        return (int) totalCount;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String s = scanner.nextLine().trim();
+            int result = homogenousSubstring(s);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
