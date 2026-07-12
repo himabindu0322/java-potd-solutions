@@ -1,0 +1,19 @@
+import java.util.*;
+import java.io.*; 
+
+public class Solution 
+{
+    public static int distinctEnemies(ArrayList<Integer> arr, int n) 
+    {
+        // A HashSet stores only unique values
+        Set<Integer> uniqueStrengths = new HashSet<>();
+        
+        // Add all elements from the list to the set
+        for (int strength : arr) {
+            uniqueStrengths.add(strength);
+        }
+        
+        // The size of the set represents the count of distinct enemies
+        return uniqueStrengths.size();
+    }
+}
