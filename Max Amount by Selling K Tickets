@@ -1,0 +1,44 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maxAmount(int[] arr, int k) {
+        long MOD = 1_000_000_007L;
+        
+        // Step 1: Find the maximum value in the array
+        int maxVal = 0;
+        for (int num : arr) {
+            if (num > maxVal) {
+                maxVal = num;
+            }
+        }
+        
+        // Step 2: Create a frequency array to store the counts of each ticket count
+        int[] freq = new int[maxVal + 1];
+        for (int num : arr) {
+            freq[num]++;
+        }
+        
+        long totalEarnings = 0;
+        
+        // Step 3: Greedily sell tickets from the highest available price downwards
+        for (int x = maxVal; x > 0 && k > 0; x--) {
+            if (freq[x] > 0) {
+                // We can sell at most k tickets total, or all available tickets at price x
+                long take = Math.min(k, freq[x]);
+                
+                // Add the revenue for selling 'take' number of tickets at price 'x'
+                totalEarnings = (totalEarnings + (take * x) % MOD) % MOD;
+                
+                // Decrease k by the number of tickets sold
+                k -= take;
+                
+                // The sellers who sold a ticket now have (x - 1) tickets left
+                if (x - 1 > 0) {
+                    freq[x - 1] += take;
+                }
+            }
+        }
+        
+        return (int) totalEarnings;
+    }
+}
