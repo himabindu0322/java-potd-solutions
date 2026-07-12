@@ -1,0 +1,20 @@
+import java.util.* ;
+import java.io.*; 
+
+public class Solution {
+    public static int[] multiply(int[] a, int[] b, int n)
+    {
+        // The resulting polynomial will have a size of 2 * n - 1
+        int[] result = new int[2 * n - 1];
+        
+        // Multiply every coefficient of polynomial A with every coefficient of polynomial B
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                // When multiplying x^i and x^j, the exponents add up to (i + j)
+                result[i + j] += a[i] * b[j];
+            }
+        }
+        
+        return result;
+    }
+}
