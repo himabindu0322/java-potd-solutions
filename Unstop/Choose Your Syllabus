@@ -1,0 +1,54 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int[] arr = new int[n];
+            int[] b = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = scanner.nextInt();
+            }
+            for (int i = 0; i < n; i++) {
+                b[i] = scanner.nextInt();
+            }
+            long result = user_logic(n, arr, b);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+
+    // Changed return type to long to handle cases where total interest exceeds 2^31 - 1
+    public static long user_logic(int n, int[] arr, int[] b) {
+        // Clone and sort arrays to use the two-pointer approach
+        int[] s1 = arr.clone();
+        int[] s2 = b.clone();
+        Arrays.sort(s1);
+        Arrays.sort(s2);
+
+        long interest1 = 0;
+        int p2 = 0;
+        // Calculate total interest value for Syllabus 1
+        for (int i = 0; i < n; i++) {
+            while (p2 < n && s2[p2] <= s1[i]) {
+                p2++;
+            }
+            interest1 += p2;
+        }
+
+        long interest2 = 0;
+        int p1 = 0;
+        // Calculate total interest value for Syllabus 2
+        for (int i = 0; i < n; i++) {
+            while (p1 < n && s1[p1] <= s2[i]) {
+                p1++;
+            }
+            interest2 += p1;
+        }
+
+        return Math.max(interest1, interest2);
+    }
+}
