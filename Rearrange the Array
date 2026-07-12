@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Solution {
+    int minOperations(int[] b) {
+        int n = b.length;
+        long MOD = 1000000007;
+        
+        // Track visited elements to identify cycles
+        boolean[] visited = new boolean[n];
+        
+        // maxPower[p] stores the highest power of prime p needed for the LCM
+        int[] maxPower = new int[n + 1];
+        
+        // Step 1: Find the length of each disjoint cycle
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                int curr = i;
+                int len = 0;
+                
+                // Traverse the current cycle
+                while (!visited[curr]) {
+                    visited[curr] = true;
+                    curr = b[curr] - 1; // 1-based indexing to 0-based indexing
+                    len++;
+                }
+                
+                // Step 2: Extract prime factorization of the cycle length
+                int temp = len;
+                for (int p = 2; p * p <= temp; p++) {
+                    if (temp % p == 0) {
+                        int count = 0;
+                        while (temp % p == 0) {
+                            count++;
+                            temp /= p;
+                        }
+                        maxPower[p] = Math.max(maxPower[p], count);
+                    }
+                }
+                // If a prime factor greater than sqrt(len) remains
+                if (temp > 1) {
+                    maxPower[temp] = Math.max(maxPower[temp], 1);
+                }
+            }
+        }
+        
+        // Step 3: Compute the LCM modulo 10^9+7 using the accumulated prime powers
+        long ans = 1;
+        for (int p = 2; p <= n; p++) {
+            if (maxPower[p] > 0) {
+                long primePowerVal = 1;
+                for (int j = 0; j < maxPower[p]; j++) {
+                    primePowerVal = (primePowerVal * p) % MOD;
+                }
+                ans = (ans * primePowerVal) % MOD;
+            }
+        }
+        
+        return (int) ans;
+    }
+}
