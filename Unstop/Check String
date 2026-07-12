@@ -1,0 +1,50 @@
+import java.util.*;
+
+public class Main {
+    public static int checkWordBreak(String goal, List<String> targetWords) {
+        int len = goal.length();
+        // dp[i] will be true if goal[0...i-1] can be formed by target words
+        boolean[] dp = new boolean[len + 1];
+        dp[0] = true; // Base case: empty string can always be formed
+
+        // Use a Set for O(1) lookups
+        Set<String> wordSet = new HashSet<>(targetWords);
+
+        // Optimization: track the max length of a target word to skip unnecessary loops
+        int maxWordLen = 0;
+        for (String word : targetWords) {
+            maxWordLen = Math.max(maxWordLen, word.length());
+        }
+
+        for (int i = 0; i < len; i++) {
+            // If the current prefix cannot be formed, we can't extend from here
+            if (!dp[i]) continue;
+
+            // Try to find valid words starting from index i
+            for (int j = i + 1; j <= len && j - i <= maxWordLen; j++) {
+                String sub = goal.substring(i, j);
+                if (wordSet.contains(sub)) {
+                    dp[j] = true;
+                }
+            }
+        }
+
+        // Return 1 if the entire goal string can be formed, else 0
+        return dp[len] ? 1 : 0;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            String goal = scanner.next();
+            List<String> targetWords = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                targetWords.add(scanner.next());
+            }
+            int result = checkWordBreak(goal, targetWords);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
