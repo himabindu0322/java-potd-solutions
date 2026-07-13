@@ -1,0 +1,24 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        // Read the three space-separated integers
+        int S = sc.nextInt(); // Base salary
+        int B = sc.nextInt(); // Bonus per 5-star rating
+        int R = sc.nextInt(); // Number of 5-star ratings received
+        
+        // Calculate total earnings
+        int totalEarnings = S + (B * R);
+        
+        // Print the final result
+        System.out.println(totalEarnings);
+        
+        sc.close();
+    }
+}
