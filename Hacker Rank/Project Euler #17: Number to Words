@@ -1,0 +1,77 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    private static final String[] ONES = {
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    };
+
+    private static final String[] TENS = {
+        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    };
+
+    private static final String[] ILLIONS = {
+        "", "Thousand", "Million", "Billion", "Trillion"
+    };
+
+    private static String convertThreeDigits(int num) {
+        StringBuilder sb = new StringBuilder();
+
+        if (num >= 100) {
+            sb.append(ONES[num / 100]).append(" Hundred ");
+            num %= 100;
+        }
+
+        if (num >= 20) {
+            sb.append(TENS[num / 10]).append(" "); // Fixed: Changed /20 to /10
+            num %= 10;
+        }
+
+        if (num > 0) {
+            sb.append(ONES[num]).append(" ");
+        }
+
+        return sb.toString().trim();
+    }
+
+    public static String numberToWords(long num) {
+        if (num == 0) {
+            return "Zero";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int group = 0;
+
+        while (num > 0) {
+            int rem = (int) (num % 1000);
+            if (rem > 0) {
+                String threeDigitWord = convertThreeDigits(rem);
+                String illion = ILLIONS[group];
+                
+                if (!illion.isEmpty()) {
+                    sb.insert(0, threeDigitWord + " " + illion + " ");
+                } else {
+                    sb.insert(0, threeDigitWord + " ");
+                }
+            }
+            num /= 1000;
+            group++;
+        }
+
+        return sb.toString().replaceAll("\\s+", " ").trim();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        int t = sc.nextInt();
+        for (int i = 0; i < t; i++) {
+            long n = sc.nextLong();
+            System.out.println(numberToWords(n));
+        }
+        sc.close();
+    }
+}
