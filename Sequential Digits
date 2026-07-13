@@ -1,0 +1,29 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Solution {
+    public List<Integer> sequentialDigits(int low, int high) {
+        List<Integer> result = new ArrayList<>();
+        String sample = "123456789";
+        
+        // Loop through all possible lengths of sequential digits (from 2 digits up to 9 digits)
+        for (int length = 2; length <= 9; length++) {
+            // Sliding window over the sample string to extract substrings
+            for (int start = 0; start <= 9 - length; start++) {
+                String substring = sample.substring(start, start + length);
+                int value = Integer.parseInt(substring);
+                
+                // If it fits within our range, add it to the list
+                if (value >= low && value <= high) {
+                    result.add(value);
+                }
+            }
+        }
+        
+        // The list is already generated in ascending order of length and starting digit,
+        // but sorting guarantees compliance with the problem statement.
+        Collections.sort(result);
+        return result;
+    }
+}
