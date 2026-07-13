@@ -1,0 +1,62 @@
+import java.util.*;
+
+public class Solution {
+    public static ArrayList<Integer> ninjaTheater(int n, ArrayList<ArrayList<Integer>> queries) {
+        ArrayList<Integer> result = new ArrayList<>();
+        TreeSet<Integer> seated = new TreeSet<>();
+
+        for (ArrayList<Integer> query : queries) {
+            int type = query.get(0);
+
+            if (type == 1) { // A person enters the theater
+                int bestSeat = 0;
+
+                if (seated.isEmpty()) {
+                    bestSeat = 0;
+                } else {
+                    int maxDist = -1;
+
+                    // Candidate 1: Check seat 0 if it's not occupied
+                    int first = seated.first();
+                    if (first > 0) {
+                        maxDist = first;
+                        bestSeat = 0;
+                    }
+
+                    // Candidate 2: Check intervals between adjacent seated people
+                    int prev = -1;
+                    for (int curr : seated) {
+                        if (prev != -1) {
+                            int dist = (curr - prev) / 2;
+                            // Strictly greater distance or equal distance with lower seat index
+                            if (dist > maxDist) {
+                                maxDist = dist;
+                                bestSeat = prev + dist;
+                            }
+                        }
+                        prev = curr;
+                    }
+
+                    // Candidate 3: Check the last seat (n - 1) if it's not occupied
+                    int last = seated.last();
+                    if (last < n - 1) {
+                        int dist = (n - 1) - last;
+                        if (dist > maxDist) {
+                            maxDist = dist;
+                            bestSeat = n - 1;
+                        }
+                    }
+                }
+
+                seated.add(bestSeat);
+                result.add(bestSeat);
+
+            } else if (type == 2) { // A person leaves the theater
+                int seatToRemove = query.get(1);
+                seated.remove(seatToRemove);
+            }
+        }
+
+        return result;
+    }
+}
