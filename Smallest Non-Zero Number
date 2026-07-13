@@ -1,0 +1,15 @@
+class Solution {
+    public int find(int[] arr) {
+        // x represents the minimum required value after processing up to the current element
+        long x = 0; 
+        
+        // Traverse the array backwards from the last element to the first
+        for (int i = arr.length - 1; i >= 0; i--) {
+            // Calculate the required value before processing arr[i]
+            // Using (x + arr[i] + 1) / 2 to perform ceiling division
+            x = (x + arr[i] + 1) / 2;
+        }
+        
+        return (int) x;
+    }
+}
