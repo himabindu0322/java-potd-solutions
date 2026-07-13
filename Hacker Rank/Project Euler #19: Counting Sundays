@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    // Zeller's Congruence to check if the 1st of a given month/year is a Sunday
+    private static boolean isSundayOnFirst(long y, int m) {
+        int d = 1;
+        if (m == 1 || m == 2) {
+            m += 12;
+            y--;
+        }
+        // Zeller's formula (0 = Saturday, 1 = Sunday, 2 = Monday, ..., 6 = Friday)
+        long h = (d + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
+        
+        return h == 1;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        int t = sc.nextInt();
+        while (t-- > 0) {
+            long y1 = sc.nextLong();
+            int m1 = sc.nextInt();
+            int d1 = sc.nextInt();
+            
+            long y2 = sc.nextLong();
+            int m2 = sc.nextInt();
+            int d2 = sc.nextInt();
+            
+            // If the start date is past the 1st of the month, 
+            // the first eligible 1st of the month is the next month.
+            if (d1 > 1) {
+                m1++;
+                if (m1 > 12) {
+                    m1 = 1;
+                    y1++;
+                }
+            }
+            
+            int sundayCount = 0;
+            long currentYear = y1;
+            int currentMonth = m1;
+            
+            // Iterate month by month until we pass the target end month/year
+            while (currentYear < y2 || (currentYear == y2 && currentMonth <= m2)) {
+                if (isSundayOnFirst(currentYear, currentMonth)) {
+                    sundayCount++;
+                }
+                
+                currentMonth++;
+                if (currentMonth > 12) {
+                    currentMonth = 1;
+                    currentYear++;
+                }
+            }
+            
+            System.out.println(sundayCount);
+        }
+        sc.close();
+    }
+}
