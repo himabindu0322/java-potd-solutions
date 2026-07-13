@@ -1,0 +1,27 @@
+import java.util.*;
+
+public class Main {
+    public static int findKthLargest(int[] nums, int k) {
+        // Sort the array in ascending order
+        Arrays.sort(nums);
+        
+        // The K-th largest element is located at index (length - k)
+        return nums[nums.length - k];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int n = scanner.nextInt();
+        int k = scanner.nextInt();
+        int[] nums = new int[n];
+        for (int i = 0; i < n; i++) {
+            nums[i] = scanner.nextInt();
+        }
+        
+        int result = findKthLargest(nums, k);
+        System.out.println(result);
+        scanner.close();
+    }
+}
