@@ -1,0 +1,39 @@
+import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int maxN = 1000;
+        int[] digitSumLookup = new int[maxN + 1];
+        
+        // Base case values for 0! = 1
+        BigInteger factorial = BigInteger.ONE;
+        digitSumLookup[0] = 1;
+
+        // Precompute all factorials and their digit sums up to 1000
+        for (int i = 1; i <= maxN; i++) {
+            factorial = factorial.multiply(BigInteger.valueOf(i));
+            
+            // Convert the large number to a string to sum its individual characters
+            String digits = factorial.toString();
+            int sum = 0;
+            for (int j = 0; j < digits.length(); j++) {
+                sum += digits.charAt(j) - '0';
+            }
+            digitSumLookup[i] = sum;
+        }
+
+        int t = sc.nextInt();
+        while (t-- > 0) {
+            int n = sc.nextInt();
+            System.out.println(digitSumLookup[n]);
+        }
+        
+        sc.close();
+    }
+}
