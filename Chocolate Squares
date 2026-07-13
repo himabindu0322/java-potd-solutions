@@ -1,0 +1,36 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        // Read the number of test cases
+        if (sc.hasNextInt()) {
+            int T = sc.nextInt();
+            
+            // Process each test case
+            while (T-- > 0) {
+                int L = sc.nextInt();
+                int B = sc.nextInt();
+                
+                // The maximum side length S is the GCD of L and B
+                System.out.println(gcd(L, B));
+            }
+        }
+        sc.close();
+    }
+    
+    // Helper method to calculate GCD using the Euclidean Algorithm
+    private static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
