@@ -1,0 +1,48 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        if (sc.hasNextInt()) {
+            int T = sc.nextInt();
+            
+            while (T-- > 0) {
+                int N = sc.nextInt();
+                int K = sc.nextInt();
+                
+                int[] W = new int[N];
+                long totalSum = 0;
+                
+                for (int i = 0; i < N; i++) {
+                    W[i] = sc.nextInt();
+                    totalSum += W[i];
+                }
+                
+                // Sort the array to easily grab the smallest or largest elements
+                Arrays.sort(W);
+                
+                // We want to pick the smaller group size to minimize the small box's sum.
+                // The size of the smaller box will be min(K, N - K).
+                int smallBoxSize = Math.min(K, N - K);
+                
+                long smallBoxSum = 0;
+                // Sum up the lightest possible items for the small box
+                for (int i = 0; i < smallBoxSize; i++) {
+                    smallBoxSum += W[i];
+                }
+                
+                // The remaining items go to the large box
+                long largeBoxSum = totalSum - smallBoxSum;
+                
+                // Output the maximum absolute difference
+                System.out.println(largeBoxSum - smallBoxSum);
+            }
+        }
+        sc.close();
+    }
+}
