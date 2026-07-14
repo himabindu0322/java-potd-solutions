@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Node {
+    int val;
+    Node next;
+    Node(int x) { val = x; next = null; }
+}
+
+public class Main {
+    public static Node user_logic(Node l1, Node l2) {
+        // Create a dummy node to act as the starting anchor
+        Node dummy = new Node(-1);
+        Node current = dummy;
+
+        // Traverse both lists and link the smaller element
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                current.next = l1;
+                l1 = l1.next;
+            } else {
+                current.next = l2;
+                l2 = l2.next;
+            }
+            current = current.next;
+        }
+
+        // If elements are remaining in either list, append them directly
+        if (l1 != null) {
+            current.next = l1;
+        } else if (l2 != null) {
+            current.next = l2;
+        }
+
+        // Return the head of the merged list (which is next to the dummy node)
+        return dummy.next;
+    }
+
+    public static void print_list(Node head) {
+        while (head != null) {
+            System.out.print(head.val + " ");
+            head = head.next;
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        Node l1 = null, l2 = null, tail = null;
+
+        for (int i = 0; i < n; i++) {
+            int val = sc.nextInt();
+            Node new_node = new Node(val);
+            if (l1 == null) {
+                l1 = new_node;
+                tail = new_node;
+            } else {
+                tail.next = new_node;
+                tail = new_node;
+            }
+        }
+
+        tail = null;
+        for (int i = 0; i < m; i++) {
+            int val = sc.nextInt();
+            Node new_node = new Node(val);
+            if (l2 == null) {
+                l2 = new_node;
+                tail = new_node;
+            } else {
+                tail.next = new_node;
+                tail = new_node;
+            }
+        }
+
+        Node merged_list = user_logic(l1, l2);
+        print_list(merged_list);
+    }
+}
