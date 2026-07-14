@@ -1,0 +1,101 @@
+import java.util.*;
+
+class Node {
+    int data;
+    Node next;
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class Main {
+    public static Node getMeanList(Node head, int k, int n) {
+        Node newHead = null;
+        Node newTail = null;
+        
+        Node curr = head;
+        int remaining = n;
+        
+        while (curr != null) {
+            // Case 1: If remaining elements are fewer than k, add them as they are
+            if (remaining < k) {
+                while (curr != null) {
+                    Node temp = new Node(curr.data);
+                    if (newHead == null) {
+                        newHead = temp;
+                        newTail = temp;
+                    } else {
+                        newTail.next = temp;
+                        newTail = temp;
+                    }
+                    curr = curr.next;
+                }
+                break;
+            }
+            
+            // Case 2: We have at least k elements left, calculate the mean of the next k elements
+            int sum = 0;
+            Node groupStart = curr;
+            for (int i = 0; i < k && curr != null; i++) {
+                sum += curr.data;
+                curr = curr.next;
+            }
+            
+            int mean = sum / k;
+            
+            // If the mean is even, append it to the new list
+            if (mean % 2 == 0) {
+                Node temp = new Node(mean);
+                if (newHead == null) {
+                    newHead = temp;
+                    newTail = temp;
+                } else {
+                    newTail.next = temp;
+                    newTail = temp;
+                }
+            }
+            
+            remaining -= k;
+        }
+        
+        return newHead;
+    }
+
+    public static void printList(Node head) {
+        Node curr = head;
+        while (curr != null) {
+            System.out.print(curr.data + " --> ");
+            curr = curr.next;
+        }
+        System.out.println("null");
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int k = scanner.nextInt();
+        int n = scanner.nextInt();
+        List<Integer> elements = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            elements.add(scanner.nextInt());
+        }
+        scanner.close();
+
+        Node head = null;
+        Node tail = null;
+
+        for (int data : elements) {
+            Node newNode = new Node(data);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
+            }
+        }
+
+        Node meanListHead = getMeanList(head, k, n);
+        printList(meanListHead);
+    }
+}
