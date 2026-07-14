@@ -1,0 +1,38 @@
+class Solution {
+    public int bitonic(int[] arr) {
+        int n = arr.length;
+        if (n <= 1) {
+            return n;
+        }
+
+        // inc[i] stores the length of the longest non-decreasing subarray ending at arr[i]
+        int[] inc = new int[n];
+        inc[0] = 1;
+        for (int i = 1; i < n; i++) {
+            if (arr[i] >= arr[i - 1]) {
+                inc[i] = inc[i - 1] + 1;
+            } else {
+                inc[i] = 1;
+            }
+        }
+
+        // dec[i] stores the length of the longest non-increasing subarray starting at arr[i]
+        int[] dec = new int[n];
+        dec[n - 1] = 1;
+        for (int i = n - 2; i >= 0; i--) {
+            if (arr[i] >= arr[i + 1]) {
+                dec[i] = dec[i + 1] + 1;
+            } else {
+                dec[i] = 1;
+            }
+        }
+
+        // Find the maximum value of inc[i] + dec[i] - 1
+        int maxLen = 0;
+        for (int i = 0; i < n; i++) {
+            maxLen = Math.max(maxLen, inc[i] + dec[i] - 1);
+        }
+
+        return maxLen;
+    }
+}
