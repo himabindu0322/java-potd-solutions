@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class Main {
+    public static int longestCommonStringLength(List<String> strings) {
+        if (strings == null || strings.isEmpty()) {
+            return 0;
+        }
+
+        // minFreq[c] will track the minimum frequency of character c across all strings
+        int[] minFreq = new int[26];
+        Arrays.fill(minFreq, Integer.MAX_VALUE);
+
+        for (String s : strings) {
+            // Count frequencies of characters in the current string
+            int[] currentFreq = new int[26];
+            for (int i = 0; i < s.length(); i++) {
+                currentFreq[s.charAt(i) - 'a']++;
+            }
+
+            // Update the global minimum frequencies for each character
+            for (int i = 0; i < 26; i++) {
+                minFreq[i] = Math.min(minFreq[i], currentFreq[i]);
+            }
+        }
+
+        // The maximum length is the sum of the minimum frequencies of all characters
+        int maxLength = 0;
+        for (int count : minFreq) {
+            maxLength += count;
+        }
+
+        return maxLength;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextLine()) return;
+        
+        int n = Integer.parseInt(scanner.nextLine().trim());
+        List<String> strings = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (scanner.hasNextLine()) {
+                strings.add(scanner.nextLine().trim());
+            }
+        }
+        int result = longestCommonStringLength(strings);
+        System.out.println(result);
+    }
+}
