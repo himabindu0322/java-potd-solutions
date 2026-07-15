@@ -1,0 +1,50 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		if (sc.hasNextInt()) {
+			int T = sc.nextInt();
+			while (T-- > 0) {
+				int N = sc.nextInt();
+				int[] A = new int[N];
+				for (int i = 0; i < N; i++) {
+					A[i] = sc.nextInt();
+				}
+				
+				int mismatchesStartEven = 0;
+				int mismatchesStartOdd = 0;
+				
+				for (int i = 0; i < N; i++) {
+					// Check if current number is odd (1) or even (0)
+					int currentParity = A[i] % 2;
+					if (currentParity < 0) {
+						currentParity += 2; // Handle potential negative values safely
+					}
+					
+					// Expected parity at index i for Pattern 1 (starts with Even/0)
+					// If i is even, expected parity is 0. If i is odd, expected is 1.
+					int expectedParityEvenStart = i % 2;
+					if (currentParity != expectedParityEvenStart) {
+						mismatchesStartEven++;
+					}
+					
+					// Expected parity at index i for Pattern 2 (starts with Odd/1)
+					// If i is even, expected parity is 1. If i is odd, expected is 0.
+					int expectedParityOddStart = (i + 1) % 2;
+					if (currentParity != expectedParityOddStart) {
+						mismatchesStartOdd++;
+					}
+				}
+				
+				// Output the minimum modifications needed
+				System.out.println(Math.min(mismatchesStartEven, mismatchesStartOdd));
+			}
+		}
+		sc.close();
+	}
+}
