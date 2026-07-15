@@ -1,0 +1,24 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		if (sc.hasNextInt()) {
+			int A = sc.nextInt();
+			int B = sc.nextInt();
+			
+			// The side of the largest square is the minimum of the two dimensions
+			int side = Math.min(A, B);
+			
+			// The area of the square is side * side
+			int area = side * side;
+			
+			System.out.println(area);
+		}
+		sc.close();
+	}
+}
