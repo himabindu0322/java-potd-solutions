@@ -1,0 +1,59 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Main {
+    public static String userLogic(String S) {
+        if (S == null || S.isEmpty()) {
+            return "";
+        }
+
+        // Count frequencies of all ASCII characters
+        int[] freq = new int[256];
+        for (int i = 0; i < S.length(); i++) {
+            freq[S.charAt(i)]++;
+        }
+
+        // Box characters so we can use a custom Comparator
+        Character[] chars = new Character[256];
+        for (int i = 0; i < 256; i++) {
+            chars[i] = (char) i;
+        }
+
+        // Sort based on the problem requirements
+        Arrays.sort(chars, (a, b) -> {
+            int freqA = freq[a];
+            int freqB = freq[b];
+            
+            if (freqA != freqB) {
+                // Descending order of frequencies
+                return Integer.compare(freqB, freqA);
+            }
+            // Ascending lexicographical order if frequencies match
+            return Character.compare(a, b);
+        });
+
+        // Reconstruct the string using StringBuilder
+        StringBuilder sb = new StringBuilder(S.length());
+        for (int i = 0; i < 256; i++) {
+            char ch = chars[i];
+            int count = freq[ch];
+            if (count == 0) break; // Since it's sorted by descending frequency, all remaining are 0
+            
+            for (int c = 0; c < count; c++) {
+                sb.append(ch);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        // Safely handle empty line input case
+        String S = scanner.hasNextLine() ? scanner.nextLine() : "";
+        scanner.close();
+        
+        String result = userLogic(S);
+        System.out.println(result);
+    }
+}
