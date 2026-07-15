@@ -1,0 +1,68 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int smallestMaxSplit(String s) {
+        int n = s.length();
+        if (n < 2) return 0; // Edge case handles constraints gracefully
+
+        // Frequency arrays to track unique counts
+        int[] leftFreq = new int[10];
+        int[] rightFreq = new int[10];
+        
+        int leftUniqueCount = 0;
+        int rightUniqueCount = 0;
+
+        // Populate initial frequencies for the entire string on the right side
+        for (int i = 0; i < n; i++) {
+            int digit = s.charAt(i) - '0';
+            if (rightFreq[digit] == 0) {
+                rightUniqueCount++;
+            }
+            rightFreq[digit]++;
+        }
+
+        int maxScore = -1;
+        int bestIndex = -1;
+
+        // Iterate through all possible splitting points i
+        // Left part is S[0...i], right part is S[i+1...n-1]
+        for (int i = 0; i < n - 1; i++) {
+            int digit = s.charAt(i) - '0';
+
+            // Transfer digit from right side to left side
+            rightFreq[digit]--;
+            if (rightFreq[digit] == 0) {
+                rightUniqueCount--;
+            }
+
+            if (leftFreq[digit] == 0) {
+                leftUniqueCount++;
+            }
+            leftFreq[digit]++;
+
+            // Total unique digits sum for current split
+            int currentScore = leftUniqueCount + rightUniqueCount;
+
+            // We use standard inequality (>) to capture the smallest index 'i' 
+            // since we are iterating from left to right.
+            if (currentScore > maxScore) {
+                maxScore = currentScore;
+                bestIndex = i;
+            }
+        }
+
+        return bestIndex;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int n = scanner.nextInt();
+        if (scanner.hasNext()) {
+            String s = scanner.next();
+            int result = smallestMaxSplit(s);
+            System.out.println(result);
+        }
+    }
+}
