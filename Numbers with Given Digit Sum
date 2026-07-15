@@ -1,0 +1,37 @@
+class Solution {
+    public int countWays(int n, int sum) {
+        // A number cannot have a sum of digits greater than 9 * number of digits
+        if (sum < 1 || sum > 9 * n) {
+            return -1;
+        }
+
+        // dp[i][j] stores the number of ways to form sum 'j' using 'i' digits (allowing 0s)
+        int[][] dp = new int[n + 1][sum + 1];
+
+        // Base case: 1 way to form sum 0 with 0 digits
+        dp[0][0] = 1;
+
+        // Build the DP table bottom-up for the remaining n-1 digits
+        for (int i = 1; i <= n - 1; i++) {
+            for (int j = 0; j <= sum; j++) {
+                // Try all possible digits from 0 to 9
+                for (int k = 0; k <= 9; k++) {
+                    if (j >= k) {
+                        dp[i][j] += dp[i - 1][j - k];
+                    }
+                }
+            }
+        }
+
+        int ways = 0;
+        
+        // For the very first digit (which cannot be 0), we use the remaining n-1 digits
+        for (int k = 1; k <= 9; k++) {
+            if (sum >= k) {
+                ways += dp[n - 1][sum - k];
+            }
+        }
+
+        return ways == 0 ? -1 : ways;
+    }
+}
