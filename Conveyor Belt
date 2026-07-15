@@ -1,0 +1,42 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = br.readLine();
+		if (line == null) return;
+		int T = Integer.parseInt(line.trim());
+		
+		while (T-- > 0) {
+			String[] np = br.readLine().trim().split("\\s+");
+			int N = Integer.parseInt(np[0]);
+			int P = Integer.parseInt(np[1]);
+			String S = br.readLine().trim();
+			
+			// 1-based index P corresponds to 0-based index P-1 in Java String
+			int pIndex = P - 1;
+			
+			// Option 1: Exit Left (All slots from index 0 to pIndex must be 'L')
+			int leftReversals = 0;
+			for (int i = 0; i <= pIndex; i++) {
+				if (S.charAt(i) == 'R') {
+					leftReversals++;
+				}
+			}
+			
+			// Option 2: Exit Right (All slots from index pIndex to N-1 must be 'R')
+			int rightReversals = 0;
+			for (int i = pIndex; i < N; i++) {
+				if (S.charAt(i) == 'L') {
+					rightReversals++;
+				}
+			}
+			
+			System.out.println(Math.min(leftReversals, rightReversals));
+		}
+	}
+}
