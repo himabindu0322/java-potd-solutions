@@ -1,0 +1,98 @@
+import java.util.Scanner;
+
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) { val = x; next = null; }
+}
+
+public class Main {
+    public ListNode multiplyLinkedLists(ListNode l1, ListNode l2) {
+        if (l1 == null || l2 == null) return new ListNode(0);
+        
+        // 1. Identify which list is the single-digit multiplier
+        int multiplier = 0;
+        ListNode numList = null;
+        
+        if (l1.next == null) {
+            multiplier = l1.val;
+            numList = l2;
+        } else if (l2.next == null) {
+            multiplier = l2.val;
+            numList = l1;
+        } else {
+            multiplier = l2.val;
+            numList = l1;
+        }
+        
+        if (multiplier == 0) return new ListNode(0);
+        
+        // 2. Reverse the multi-digit list to process from least significant to most significant digit
+        numList = reverse(numList);
+        
+        // 3. Perform standard grade-school multiplication with carry
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+        int carry = 0;
+        ListNode temp = numList;
+        
+        while (temp != null || carry > 0) {
+            int sum = carry;
+            if (temp != null) {
+                sum += temp.val * multiplier;
+                temp = temp.next;
+            }
+            current.next = new ListNode(sum % 10);
+            current = current.next;
+            carry = sum / 10;
+        }
+        
+        // 4. Reverse the final product list so that linkedListToString prints it in the correct order
+        return reverse(dummy.next);
+    }
+    
+    private ListNode reverse(ListNode head) {
+        ListNode prev = null;
+        ListNode current = head;
+        while (current != null) {
+            ListNode nextNode = current.next;
+            current.next = prev;
+            prev = current;
+            current = nextNode;
+        }
+        return prev;
+    }
+
+    public ListNode buildLinkedListFromString(String s) {
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            current.next = new ListNode(s.charAt(i) - '0');
+            current = current.next;
+        }
+        return dummy.next;
+    }
+
+    public String linkedListToString(ListNode l) {
+        StringBuilder result = new StringBuilder();
+        while (l != null) {
+            result.append(l.val);
+            l = l.next;
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNext()) {
+            String n = sc.next();
+            String m = sc.next();
+            Main main = new Main();
+            ListNode l1 = main.buildLinkedListFromString(n);
+            ListNode l2 = main.buildLinkedListFromString(m);
+            ListNode resultHead = main.multiplyLinkedLists(l1, l2);
+            String resultStr = main.linkedListToString(resultHead);
+            System.out.println(resultStr);
+        }
+    }
+}
