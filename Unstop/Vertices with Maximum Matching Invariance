@@ -1,0 +1,95 @@
+import java.util.*;
+
+public class Main {
+    public static void countRemovableVertices(int n, List<int[]> edges) {
+        // Step 1: Build a type-safe adjacency list
+        List<List<Integer>> adj = new ArrayList<>(n + 1);
+        for (int i = 0; i <= n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            adj.get(edge[0]).add(edge[1]);
+            adj.get(edge[1]).add(edge[0]);
+        }
+
+        // Step 2: Determine parent array and a bottom-up processing order using BFS
+        int[] parent = new int[n + 1];
+        int[] order = new int[n];
+        int head = 0, tail = 0;
+        
+        boolean[] visited = new boolean[n + 1];
+        visited[1] = true;
+        order[tail++] = 1;
+
+        while (head < tail) {
+            int u = order[head++];
+            for (int v : adj.get(u)) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    parent[v] = u;
+                    order[tail++] = v;
+                }
+            }
+        }
+
+        // Step 3: Greedy Maximum Matching (Bottom-Up execution)
+        int[] partner = new int[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            int u = order[i];
+            int p = parent[u];
+            if (p != 0 && partner[u] == 0 && partner[p] == 0) {
+                partner[u] = p;
+                partner[p] = u;
+            }
+        }
+
+        // Step 4: Alternating Path BFS from all unmatched vertices
+        boolean[] inD = new boolean[n + 1];
+        Queue<Integer> queue = new LinkedList<>();
+        
+        for (int i = 1; i <= n; i++) {
+            if (partner[i] == 0) {
+                inD[i] = true;
+                queue.add(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            for (int v : adj.get(u)) {
+                // Traverse only non-matching edges
+                if (v != partner[u]) {
+                    int w = partner[v];
+                    if (w != 0 && !inD[w]) {
+                        inD[w] = true;
+                        queue.add(w);
+                    }
+                }
+            }
+        }
+
+        // Step 5: Count all valid vertices
+        int count = 0;
+        for (int i = 1; i <= n; i++) {
+            if (inD[i]) {
+                count++;
+            }
+        }
+
+        System.out.println(count);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            List<int[]> edges = new ArrayList<>();
+            for (int i = 0; i < n - 1; i++) {
+                int u = scanner.nextInt();
+                int v = scanner.nextInt();
+                edges.add(new int[]{u, v});
+            }
+            countRemovableVertices(n, edges);
+        }
+    }
+}
