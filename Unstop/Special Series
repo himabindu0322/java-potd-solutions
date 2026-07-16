@@ -1,0 +1,39 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int specialSeries(int A, int B, int N) {
+        // Base cases
+        if (N == 1) return A;
+        if (N == 2) return B;
+
+        int term1 = A;
+        int term2 = B;
+        int currentTerm = 0;
+
+        // Iterate from 3 up to N to calculate the N-th term
+        for (int i = 3; i <= N; i++) {
+            currentTerm = Math.abs(term2 - term1);
+            term1 = term2;
+            term2 = currentTerm;
+            
+            // Optimization: If two consecutive terms become 0, all subsequent terms will be 0
+            if (term1 == 0 && term2 == 0) {
+                return 0;
+            }
+        }
+
+        return currentTerm;
+    }
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int A = scanner.nextInt();
+            int B = scanner.nextInt();
+            int N = scanner.nextInt();
+            
+            int result = specialSeries(A, B, N);
+            System.out.println(result);
+        }
+    }
+}
