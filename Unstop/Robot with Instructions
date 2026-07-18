@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Main {
+    static void executeInstructions(int n, int[] pos, String instruction, int[] result) {
+        int m = instruction.length();
+        
+        // Loop through each starting instruction index
+        for (int i = 0; i < m; i++) {
+            int r = pos[0];
+            int c = pos[1];
+            int count = 0;
+            
+            // Simulate instructions sequentially from the i-th index
+            for (int j = i; j < m; j++) {
+                char ch = instruction.charAt(j);
+                
+                // Track potential next coordinates
+                int nextR = r;
+                int nextC = c;
+                
+                if (ch == 'L') nextC--;
+                else if (ch == 'R') nextC++;
+                else if (ch == 'U') nextR--;
+                else if (ch == 'D') nextR++;
+                
+                // Check if the move is within the grid boundaries
+                if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < n) {
+                    count++;
+                    r = nextR;
+                    c = nextC;
+                } else {
+                    // Out of grid boundaries, stop executing further instructions
+                    break;
+                }
+            }
+            result[i] = count;
+        }
+    }
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        if (sc.hasNextInt()) {
+            int n = sc.nextInt();
+            int[] pos = new int[] { sc.nextInt(), sc.nextInt() };
+            int m = sc.nextInt();
+            String instruction = sc.next();
+            
+            int[] result = new int[m];
+            executeInstructions(n, pos, instruction, result);
+            
+            for (int i = 0; i < m; i++) {
+                System.out.print(result[i] + " ");
+            }
+            System.out.println();
+        }
+        sc.close();
+    }
+}
