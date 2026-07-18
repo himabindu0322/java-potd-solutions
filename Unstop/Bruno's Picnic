@@ -1,0 +1,61 @@
+import java.util.*;
+
+public class Main {
+    // Greedy function to check if it's possible to invite exactly k happy friends
+    private static boolean check(int k, List<int[]> friends) {
+        int x = 0; // Number of friends successfully placed so far
+        
+        for (int[] friend : friends) {
+            int a = friend[0];
+            int b = friend[1];
+            
+            // Check if this friend can fit into the next rank (x + 1)
+            if (k - a <= x + 1 && x + 1 <= b + 1) {
+                x++;
+                // Optimization: if we already found k valid friends, we can stop early
+                if (x == k) {
+                    return true;
+                }
+            }
+        }
+        return x >= k;
+    }
+
+    static void userLogic(int n, List<int[]> friends) {
+        int low = 1;
+        int high = n;
+        int ans = 0;
+
+        // Binary search for the maximum number of friends
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (check(mid, friends)) {
+                ans = mid;       // mid is feasible, try to look for a larger group
+                low = mid + 1;
+            } else {
+                high = mid - 1;  // mid is too large, look for a smaller group
+            }
+        }
+        
+        // As per the template structure, print the final answer for the test case
+        System.out.println(ans);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int T = scanner.nextInt();
+            for (int i = 0; i < T; i++) {
+                int n = scanner.nextInt();
+                List<int[]> friends = new ArrayList<>();
+                for (int j = 0; j < n; j++) {
+                    int ai = scanner.nextInt();
+                    int bi = scanner.nextInt();
+                    friends.add(new int[]{ai, bi});
+                }
+                userLogic(n, friends);
+            }
+        }
+        scanner.close();
+    }
+}
