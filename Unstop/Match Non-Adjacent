@@ -1,0 +1,81 @@
+import java.util.Scanner;
+
+public class Main {
+    static final int MOD = 998244353;
+
+    public static int userLogic(int N, int M, int K) {
+        // If K is greater than the maximum possible sum, all sequences are valid
+        // Max possible sum is N * M. To prevent overflow, use long comparison.
+        if ((long) N * M <= K) {
+            return (int) power(M + 1, N);
+        }
+
+        // The maximum value needed for our factorial array is K + N
+        int maxFact = K + N;
+        long[] fact = new long[maxFact + 1];
+        long[] invFact = new long[maxFact + 1];
+        
+        fact[0] = 1;
+        invFact[0] = 1;
+        for (int i = 1; i <= maxFact; i++) {
+            fact[i] = (fact[i - 1] * i) % MOD;
+        }
+        
+        invFact[maxFact] = inverse(fact[maxFact]);
+        for (int i = maxFact - 1; i >= 1; i--) {
+            invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;
+        }
+
+        long ans = 0;
+        long limit = K / (M + 1);
+
+        for (int j = 0; j <= N && j <= limit; j++) {
+            long waysNchooseJ = nCr(N, j, fact, invFact);
+            long upperIndex = (long) K - (long) j * (M + 1) + N;
+            long waysUpperChooseN = nCr((int) upperIndex, N, fact, invFact);
+            
+            long term = (waysNchooseJ * waysUpperChooseN) % MOD;
+            
+            if (j % 2 == 1) {
+                ans = (ans - term + MOD) % MOD;
+            } else {
+                ans = (ans + term) % MOD;
+            }
+        }
+
+        return (int) ans;
+    }
+
+    private static long nCr(int n, int r, long[] fact, long[] invFact) {
+        if (r < 0 || r > n) return 0;
+        return fact[n] * invFact[r] % MOD * invFact[n - r] % MOD;
+    }
+
+    private static long power(long base, long exp) {
+        long res = 1;
+        base %= MOD;
+        while (exp > 0) {
+            if (exp % 2 == 1) res = (res * base) % MOD;
+            base = (base * base) % MOD;
+            exp /= 2;
+        }
+        return res;
+    }
+
+    private static long inverse(long n) {
+        return power(n, MOD - 2);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int N = scanner.nextInt();
+            int M = scanner.nextInt();
+            int K = scanner.nextInt();
+            scanner.close();
+            
+            int result = userLogic(N, M, K);
+            System.out.println(result);
+        }
+    }
+}
