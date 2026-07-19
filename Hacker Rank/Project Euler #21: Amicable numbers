@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int MAX = 100000;
+        int[] divSum = new int[MAX + 1];
+        
+        // 1. Sieve to calculate the sum of proper divisors d(n)
+        for (int i = 1; i <= MAX; i++) {
+            for (int j = 2 * i; j <= MAX; j += i) {
+                divSum[j] += i;
+            }
+        }
+        
+        // 2. Precompute the prefix sum of amicable numbers
+        long[] amicablePrefixSum = new long[MAX + 1];
+        for (int i = 1; i <= MAX; i++) {
+            int j = divSum[i];
+            // Check if 'i' and 'j' form an amicable pair
+            if (j <= MAX && j != i && divSum[j] == i) {
+                amicablePrefixSum[i] = amicablePrefixSum[i - 1] + i;
+            } else {
+                amicablePrefixSum[i] = amicablePrefixSum[i - 1];
+            }
+        }
+        
+        // 3. Process each query in O(1) time
+        if (sc.hasNextInt()) {
+            int t = sc.nextInt();
+            while (t-- > 0) {
+                int n = sc.nextInt();
+                // "Under N" means strictly less than N
+                System.out.println(amicablePrefixSum[n - 1]);
+            }
+        }
+        sc.close();
+    }
+}
