@@ -1,0 +1,57 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int MAX = 100000;
+        int[] divSum = new int[MAX + 1];
+        
+        // 1. Sieve to calculate proper divisor sums
+        for (int i = 1; i <= MAX; i++) {
+            for (int j = 2 * i; j <= MAX; j += i) {
+                divSum[j] += i;
+            }
+        }
+        
+        // 2. Identify and collect all abundant numbers
+        List<Integer> abundantNumbers = new ArrayList<>();
+        for (int i = 12; i <= MAX; i++) {
+            if (divSum[i] > i) {
+                abundantNumbers.add(i);
+            }
+        }
+        
+        // 3. Mark all numbers that can be written as the sum of two abundant numbers
+        boolean[] canBeExpressed = new boolean[MAX + 1];
+        int size = abundantNumbers.size();
+        for (int i = 0; i < size; i++) {
+            int a = abundantNumbers.get(i);
+            for (int j = i; j < size; j++) {
+                int b = abundantNumbers.get(j);
+                if (a + b <= MAX) {
+                    canBeExpressed[a + b] = true;
+                } else {
+                    // Since the list is sorted, if a + b > MAX, larger b values will also exceed MAX
+                    break;
+                }
+            }
+        }
+        
+        // 4. Process queries
+        if (sc.hasNextInt()) {
+            int t = sc.nextInt();
+            while (t-- > 0) {
+                int n = sc.nextInt();
+                if (n <= MAX && canBeExpressed[n]) {
+                    System.out.println("YES");
+                } else {
+                    System.out.println("NO");
+                }
+            }
+        }
+        sc.close();
+    }
+}
