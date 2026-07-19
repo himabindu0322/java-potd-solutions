@@ -1,0 +1,57 @@
+import java.util.ArrayList;
+
+class Solution {
+    // Trie Node definition
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        int frequency = 0;
+    }
+
+    public ArrayList<String> findPrefixes(ArrayList<String> arr) {
+        TrieNode root = new TrieNode();
+        
+        // Step 1: Insert all words into the Trie and update frequencies
+        for (String word : arr) {
+            insert(root, word);
+        }
+        
+        // Step 2: Find the shortest unique prefix for each word
+        ArrayList<String> result = new ArrayList<>();
+        for (String word : arr) {
+            result.add(getUniquePrefix(root, word));
+        }
+        
+        return result;
+    }
+    
+    // Helper method to insert a word into the Trie
+    private void insert(TrieNode root, String word) {
+        TrieNode current = root;
+        for (int i = 0; i < word.length(); i++) {
+            int index = word.charAt(i) - 'a';
+            if (current.children[index] == null) {
+                current.children[index] = new TrieNode();
+            }
+            current = current.children[index];
+            current.frequency++; // Increment frequency for this prefix path
+        }
+    }
+    
+    // Helper method to find the shortest unique prefix
+    private String getUniquePrefix(TrieNode root, String word) {
+        TrieNode current = root;
+        StringBuilder prefix = new StringBuilder();
+        
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            prefix.append(ch);
+            current = current.children[ch - 'a'];
+            
+            // As soon as frequency drops to 1, this prefix is unique!
+            if (current.frequency == 1) {
+                return prefix.toString();
+            }
+        }
+        return prefix.toString();
+    }
+}
