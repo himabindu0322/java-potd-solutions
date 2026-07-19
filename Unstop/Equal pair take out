@@ -1,0 +1,55 @@
+import java.util.*;
+
+public class Main {
+    // Helper class to bundle the ID and size together
+    static class Product {
+        int id;
+        int size;
+
+        Product(int id, int size) {
+            this.id = id;
+            this.size = size;
+        }
+    }
+
+    public static int userLogic(int n, int[] idVector, int[] sizeVector) {
+        // Using a standard Deque as a Stack for performance
+        Deque<Product> stack = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+            int currentId = idVector[i];
+            int currentSize = sizeVector[i];
+
+            // If stack is not empty and top matches current element, remove it
+            if (!stack.isEmpty() && stack.peek().id == currentId && stack.peek().size == currentSize) {
+                stack.pop();
+            } else {
+                // Otherwise, add the current element to the stack
+                stack.push(new Product(currentId, currentSize));
+            }
+        }
+
+        // The remaining size of the stack is our answer
+        return stack.size();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        int n = sc.nextInt();
+        int[] idVector = new int[n];
+        int[] sizeVector = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            idVector[i] = sc.nextInt();
+        }
+        for (int i = 0; i < n; i++) {
+            sizeVector[i] = sc.nextInt();
+        }
+        
+        int result = userLogic(n, idVector, sizeVector);
+        System.out.println(result);
+        sc.close();
+    }
+}
