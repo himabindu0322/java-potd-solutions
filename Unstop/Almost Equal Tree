@@ -1,0 +1,78 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int x) { val = x; left = null; right = null; }
+}
+
+public class Main {
+    public static TreeNode buildTree(String data) {
+        if (data == null || data.trim().isEmpty()) return null;
+        String[] values = data.trim().split(" ");
+        if (values[0].equals("-1")) return null;
+        
+        TreeNode root = new TreeNode(Integer.parseInt(values[0]));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int i = 1;
+        while (i < values.length && !queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            
+            // Handle left child
+            if (i < values.length) {
+                if (!values[i].equals("-1")) {
+                    node.left = new TreeNode(Integer.parseInt(values[i]));
+                    queue.add(node.left);
+                }
+                i++;
+            }
+            
+            // Handle right child
+            if (i < values.length) {
+                if (!values[i].equals("-1")) {
+                    node.right = new TreeNode(Integer.parseInt(values[i]));
+                    queue.add(node.right);
+                }
+                i++;
+            }
+        }
+        return root;
+    }
+
+    public static boolean isAlmostEqualTree(TreeNode root1, TreeNode root2) {
+        // Base case 1: Both nodes are null, so they match perfectly.
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        
+        // Base case 2: One node is null or their values are unequal.
+        if (root1 == null || root2 == null || root1.val != root2.val) {
+            return false;
+        }
+        
+        // Check structural configurations:
+        // Option A: Left matches Left, Right matches Right (No swap)
+        boolean noSwap = isAlmostEqualTree(root1.left, root2.left) 
+                      && isAlmostEqualTree(root1.right, root2.right);
+                      
+        // Option B: Left matches Right, Right matches Left (Swap performed)
+        boolean swapNeeded = isAlmostEqualTree(root1.left, root2.right) 
+                          && isAlmostEqualTree(root1.right, root2.left);
+                          
+        return noSwap || swapNeeded;
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line1 = br.readLine();
+        String line2 = br.readLine();
+        TreeNode root1 = buildTree(line1);
+        TreeNode root2 = buildTree(line2);
+        boolean result = isAlmostEqualTree(root1, root2);
+        System.out.println(result ? "true" : "false");
+    }
+}
