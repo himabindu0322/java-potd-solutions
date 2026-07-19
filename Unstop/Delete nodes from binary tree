@@ -1,0 +1,109 @@
+import java.util.*;
+
+class Node {
+    int data;
+    Node left, right;
+    public Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+public class Main {
+
+    public static void userLogic(int n, int m, List<Integer> nodeValues, List<Integer> toDelete) {
+        if (nodeValues == null || nodeValues.isEmpty() || nodeValues.get(0) == -1) return;
+
+        // 1. Reconstruct the binary tree safely handling potential -1 (null) markers
+        Node root = new Node(nodeValues.get(0));
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        
+        int i = 1;
+        while (i < nodeValues.size() && !queue.isEmpty()) {
+            Node curr = queue.poll();
+            
+            // Left child
+            if (i < nodeValues.size()) {
+                int leftVal = nodeValues.get(i++);
+                if (leftVal != -1) {
+                    curr.left = new Node(leftVal);
+                    queue.add(curr.left);
+                }
+            }
+            // Right child
+            if (i < nodeValues.size()) {
+                int rightVal = nodeValues.get(i++);
+                if (rightVal != -1) {
+                    curr.right = new Node(rightVal);
+                    queue.add(curr.right);
+                }
+            }
+        }
+
+        // 2. Put elements to delete into a set for O(1) lookups
+        Set<Integer> deleteSet = new HashSet<>(toDelete);
+        List<Node> forestRoots = new ArrayList<>();
+
+        // 3. Perform DFS deletion
+        root = helper(root, deleteSet, forestRoots);
+        
+        // If the original root wasn't deleted, it forms a tree in the forest
+        if (root != null) {
+            forestRoots.add(root);
+        }
+
+        // 4. Print the inorder traversal of each disjoint tree in the forest
+        for (Node forestRoot : forestRoots) {
+            List<Integer> result = inOrderTraversal(forestRoot);
+            for (int j = 0; j < result.size(); j++) {
+                System.out.print(result.get(j) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static Node helper(Node node, Set<Integer> deleteSet, List<Node> forestRoots) {
+        if (node == null) return null;
+
+        // Post-order traversal: process children first
+        node.left = helper(node.left, deleteSet, forestRoots);
+        node.right = helper(node.right, deleteSet, forestRoots);
+
+        // If the current node needs to be deleted
+        if (deleteSet.contains(node.data)) {
+            if (node.left != null) forestRoots.add(node.left);
+            if (node.right != null) forestRoots.add(node.right);
+            return null; // Disconnect from parent
+        }
+
+        return node;
+    }
+
+    public static List<Integer> inOrderTraversal(Node root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        result.addAll(inOrderTraversal(root.left));
+        result.add(root.data);
+        result.addAll(inOrderTraversal(root.right));
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt(); 
+        int m = sc.nextInt(); 
+        
+        List<Integer> nodeValues = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            nodeValues.add(sc.nextInt());
+        }
+        List<Integer> toDelete = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            toDelete.add(sc.nextInt());
+        }
+        
+        userLogic(n, m, nodeValues, toDelete);
+    }
+}
