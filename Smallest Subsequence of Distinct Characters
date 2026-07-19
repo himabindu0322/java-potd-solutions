@@ -1,0 +1,46 @@
+import java.util.Stack;
+
+class Solution {
+    public String smallestSubsequence(String s) {
+        // Track the last occurrence index of each character
+        int[] lastIndex = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            lastIndex[s.charAt(i) - 'a'] = i;
+        }
+        
+        // Track if a character is already included in our result stack
+        boolean[] seen = new boolean[26];
+        
+        // Use a StringBuilder as a stack for easier string construction
+        StringBuilder stack = new StringBuilder();
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int idx = c - 'a';
+            
+            // If the character is already in our result, we skip it
+            if (seen[idx]) {
+                continue;
+            }
+            
+            // Pop characters from the stack if:
+            // 1. The stack is not empty
+            // 2. The top character is larger than the current character 'c'
+            // 3. The top character appears again later in the string
+            while (stack.length() > 0 && 
+                   stack.charAt(stack.length() - 1) > c && 
+                   lastIndex[stack.charAt(stack.length() - 1) - 'a'] > i) {
+                
+                // Mark the popped character as not seen so it can be added later
+                seen[stack.charAt(stack.length() - 1) - 'a'] = false;
+                stack.deleteCharAt(stack.length() - 1);
+            }
+            
+            // Push the current character and mark it as seen
+            stack.append(c);
+            seen[idx] = true;
+        }
+        
+        return stack.toString();
+    }
+}
