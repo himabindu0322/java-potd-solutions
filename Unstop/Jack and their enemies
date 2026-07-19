@@ -1,0 +1,69 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void user_logic(int n, int[] enemy_groups, int m) {
+        int low = 1;
+        int high = 0;
+        
+        // Find the upper bound for binary search (maximum element in the array)
+        for (int group : enemy_groups) {
+            if (group > high) {
+                high = group;
+            }
+        }
+        
+        int ans = -1;
+        
+        // Binary search for the minimum viable kill rate K
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (canEliminateAll(enemy_groups, mid, m)) {
+                ans = mid;         // Record the possible valid K
+                high = mid - 1;    // Try to find a smaller K
+            } else {
+                low = mid + 1;     // Increase K to reduce the time spent
+            }
+        }
+        
+        // Handle case where no solution exists (per problem statement constraints, 
+        // N <= M, so a solution should always exist, but fallback safely just in case)
+        if (ans == -1) {
+            System.out.println("1 1");
+            return;
+        }
+        
+        // Convert the decimal minimum integer K into an octal string
+        String octalStr = Integer.toOctalString(ans);
+        
+        // Print the final result format: K followed by its octal representation
+        System.out.println(ans + " " + octalStr);
+    }
+    
+    // Helper function to check if all enemies can be killed within M minutes at rate K
+    private static boolean canEliminateAll(int[] enemy_groups, int K, int M) {
+        long totalMinutes = 0;
+        for (int group : enemy_groups) {
+            // Equivalent to Math.ceil((double) group / K) using integer division
+            totalMinutes += (group + K - 1) / K;
+            
+            // Optimization: If totalMinutes already exceeds M, stop early
+            if (totalMinutes > M) {
+                return false;
+            }
+        }
+        return totalMinutes <= M;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        int[] enemy_groups = new int[n];
+        for (int i = 0; i < n; i++) {
+            enemy_groups[i] = scanner.nextInt();
+        }
+        int m = scanner.nextInt();
+        
+        user_logic(n, enemy_groups, m);
+    }
+}
