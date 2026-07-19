@@ -1,0 +1,48 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        // Precompute factorials up to 13!
+        long[] factorials = new long[14];
+        factorials[0] = 1;
+        for (int i = 1; i <= 13; i++) {
+            factorials[i] = factorials[i - 1] * i;
+        }
+        
+        if (sc.hasNextInt()) {
+            int t = sc.nextInt();
+            while (t-- > 0) {
+                long n = sc.nextLong();
+                
+                // Convert 1-indexed N to 0-indexed for division/modulo operations
+                n--; 
+                
+                // List of available characters in alphabetical order
+                List<Character> chars = new ArrayList<>(Arrays.asList(
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'
+                ));
+                
+                StringBuilder sb = new StringBuilder();
+                int totalChars = 13;
+                
+                // Determine each character sequentially
+                for (int i = totalChars - 1; i >= 0; i--) {
+                    long permutationsPerBlock = factorials[i];
+                    int index = (int) (n / permutationsPerBlock);
+                    
+                    sb.append(chars.get(index));
+                    chars.remove(index); // Remove the used character
+                    
+                    n %= permutationsPerBlock;
+                }
+                
+                System.out.println(sb.toString());
+            }
+        }
+        sc.close();
+    }
+}
