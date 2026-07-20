@@ -1,0 +1,22 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		
+		// Read total students (N) and current pens (P)
+		int N = sc.nextInt();
+		int P = sc.nextInt();
+		
+		// Additional pens needed is N - P
+		int additionalPens = N - P;
+		
+		System.out.println(additionalPens);
+		
+		sc.close();
+	}
+}
