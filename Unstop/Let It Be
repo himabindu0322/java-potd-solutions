@@ -1,0 +1,107 @@
+import java.util.*;
+
+class Main {
+    // Segment Tree class for Range Maximum Queries and Point Updates
+    static class SegmentTree {
+        int n;
+        long[] tree;
+
+        public SegmentTree(List<Long> A) {
+            this.n = A.size();
+            tree = new long[4 * n];
+            build(A, 0, 0, n - 1);
+        }
+
+        private void build(List<Long> A, int node, int start, int end) {
+            if (start == end) {
+                tree[node] = A.get(start);
+                return;
+            }
+            int mid = start + (end - start) / 2;
+            build(A, 2 * node + 1, start, mid);
+            build(A, 2 * node + 2, mid + 1, end);
+            tree[node] = Math.max(tree[2 * node + 1], tree[2 * node + 2]);
+        }
+
+        public void update(int idx, long val) {
+            update(0, 0, n - 1, idx, val);
+        }
+
+        private void update(int node, int start, int end, int idx, long val) {
+            if (start == end) {
+                tree[node] = val;
+                return;
+            }
+            int mid = start + (end - start) / 2;
+            if (idx <= mid) {
+                update(2 * node + 1, start, mid, idx, val);
+            } else {
+                update(2 * node + 2, mid + 1, end, idx, val);
+            }
+            tree[node] = Math.max(tree[2 * node + 1], tree[2 * node + 2]);
+        }
+
+        public long getMax() {
+            return tree[0];
+        }
+    }
+
+    public static List<Long> processTestCase(int N, int Q, List<Long> A, List<int[]> queries) {
+        List<Long> result = new ArrayList<>();
+        
+        // Build the Segment Tree with initial array A
+        SegmentTree segTree = new SegmentTree(A);
+
+        for (int[] query : queries) {
+            int type = query[0]; // 1 for '?', 0 for '!'
+            
+            if (type == 1) {
+                // Type 1: Return max element
+                result.add(segTree.getMax());
+            } else {
+                // Type 2: Update position x to y
+                int idx = query[1];
+                long val = query[2];
+
+                // Convert 1-based index to 0-based index if index >= 1
+                if (idx >= 1 && idx <= N) {
+                    idx = idx - 1;
+                }
+
+                segTree.update(idx, val);
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int t = sc.nextInt();
+            while (t-- > 0) {
+                int N = sc.nextInt();
+                int Q = sc.nextInt();
+                List<Long> A = new ArrayList<>();
+                for (int i = 0; i < N; i++) {
+                    A.add(sc.nextLong());
+                }
+                List<int[]> queries = new ArrayList<>();
+                for (int i = 0; i < Q; i++) {
+                    char type = sc.next().charAt(0);
+                    int x = 0, y = 0;
+                    if (type != '?') {
+                        x = sc.nextInt();
+                        y = sc.nextInt();
+                    }
+                    queries.add(new int[] { type == '?' ? 1 : 0, x, y });
+                }
+                List<Long> result = processTestCase(N, Q, A, queries);
+                for (long res : result) {
+                    System.out.println(res);
+                }
+            }
+        }
+        sc.close();
+    }
+}
