@@ -1,0 +1,35 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public List<List<Integer>> shiftGrid(int[][] grid, int k) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int total = m * n;
+        
+        // Handle k larger than total elements
+        k = k % total;
+        
+        List<List<Integer>> result = new ArrayList<>();
+        
+        for (int i = 0; i < m; i++) {
+            List<Integer> row = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                // Calculate the 1D index of current position [i][j]
+                int current1D = i * n + j;
+                
+                // Find where the element for this spot came from before k shifts
+                int prev1D = (current1D - k + total) % total;
+                
+                // Convert 1D index back to 2D coordinates
+                int prevR = prev1D / n;
+                int prevC = prev1D % n;
+                
+                row.add(grid[prevR][prevC]);
+            }
+            result.add(row);
+        }
+        
+        return result;
+    }
+}
