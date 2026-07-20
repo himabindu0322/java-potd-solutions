@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    private static final int MAX_N = 10000;
+    private static final int[] best = new int[MAX_N + 1];
+
+    // Method to calculate the recurring cycle length of 1/d
+    private static int getCycleLength(int d) {
+        if (d <= 1) return 0; // Handle d = 1 edge case
+
+        int[] lastPos = new int[d];
+        int position = 1;
+        int remainder = 1 % d;
+
+        while (remainder != 0) {
+            if (lastPos[remainder] != 0) {
+                return position - lastPos[remainder];
+            }
+            lastPos[remainder] = position;
+            remainder = (remainder * 10) % d;
+            position++;
+        }
+
+        return 0; // Terminating decimal
+    }
+
+    // Precalculate optimal denominators up to MAX_N
+    private static void precompute() {
+        int maxCycleLen = 0;
+        int maxDenominator = 0;
+
+        // Start from d = 2 since d = 1 has cycle length 0
+        for (int d = 2; d <= MAX_N; d++) {
+            int cycleLen = getCycleLength(d);
+            if (cycleLen > maxCycleLen) {
+                maxCycleLen = cycleLen;
+                maxDenominator = d;
+            }
+            // best[d] stores the answer for strict constraint: denominator < d
+            best[d] = maxDenominator;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        precompute();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line = br.readLine();
+        if (line == null) return;
+
+        int T = Integer.parseInt(line.trim());
+        StringBuilder sb = new StringBuilder();
+
+        while (T-- > 0) {
+            int N = Integer.parseInt(br.readLine().trim());
+            // Since we need denominator d < N, query at N - 1
+            sb.append(best[N - 1]).append("\n");
+        }
+
+        System.out.print(sb);
+    }
+}
