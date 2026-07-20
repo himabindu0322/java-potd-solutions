@@ -1,0 +1,35 @@
+class Solution {
+    public int maxIndexDifference(String s) {
+        int n = s.length();
+        
+        // maxReach[c] stores the maximum index reachable starting from character ('a' + c)
+        // occurring to the right of the current index.
+        int[] maxReach = new int[26];
+        for (int i = 0; i < 26; i++) {
+            maxReach[i] = -1;
+        }
+
+        int maxDiff = -1;
+
+        // Traverse right to left
+        for (int i = n - 1; i >= 0; i--) {
+            int charIdx = s.charAt(i) - 'a';
+
+            // Calculate max reachable index starting specifically from index i
+            int maxReachableFromI = i;
+            if (charIdx < 25 && maxReach[charIdx + 1] != -1) {
+                maxReachableFromI = maxReach[charIdx + 1];
+            }
+
+            // If current character is 'a', check the difference from index i
+            if (charIdx == 0) {
+                maxDiff = Math.max(maxDiff, maxReachableFromI - i);
+            }
+
+            // Update maxReach for this character to be used by characters to the left
+            maxReach[charIdx] = Math.max(maxReach[charIdx], maxReachableFromI);
+        }
+
+        return maxDiff;
+    }
+}
