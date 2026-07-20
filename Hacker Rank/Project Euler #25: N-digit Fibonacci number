@@ -1,0 +1,33 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    // Pre-calculate constants for speed and precision
+    private static final double PHI_LOG10 = Math.log10((1 + Math.sqrt(5)) / 2);
+    private static final double SQRT5_LOG10 = 0.5 * Math.log10(5);
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        String firstLine = br.readLine();
+        if (firstLine == null) return;
+        
+        int T = Integer.parseInt(firstLine.trim());
+        StringBuilder sb = new StringBuilder();
+
+        while (T-- > 0) {
+            int N = Integer.parseInt(br.readLine().trim());
+            
+            if (N == 1) {
+                sb.append(1).append("\n");
+            } else {
+                // Direct O(1) formula calculation
+                long ans = (long) Math.ceil((N - 1 + SQRT5_LOG10) / PHI_LOG10);
+                sb.append(ans).append("\n");
+            }
+        }
+
+        System.out.print(sb);
+    }
+}
