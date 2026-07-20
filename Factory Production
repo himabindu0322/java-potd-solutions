@@ -1,0 +1,58 @@
+import java.util.*;
+import java.io.*;
+
+class Codechef
+{
+    // Helper method to check if 'time' seconds is enough to produce at least X items
+    private static boolean canProduce(long time, int[] A, long X) {
+        long totalItems = 0;
+        for (int a : A) {
+            totalItems += time / a;
+            // Early break to avoid potential long overflow if totalItems exceeds X significantly
+            if (totalItems >= X) {
+                return true;
+            }
+        }
+        return totalItems >= X;
+    }
+
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        // Using Fast I/O (BufferedReader / StringTokenizer) for large input N <= 2*10^5
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int N = Integer.parseInt(st.nextToken());
+        long X = Long.parseLong(st.nextToken());
+
+        int[] A = new int[N];
+        st = new StringTokenizer(br.readLine());
+        long minA = Long.MAX_VALUE;
+
+        for (int i = 0; i < N; i++) {
+            A[i] = Integer.parseInt(st.nextToken());
+            if (A[i] < minA) {
+                minA = A[i];
+            }
+        }
+
+        // Binary search range for minimum time
+        long low = 1;
+        // Upper bound: worst case where only the fastest machine produces all X items
+        long high = minA * X; 
+        long ans = high;
+
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+
+            if (canProduce(mid, A, X)) {
+                ans = mid;        // mid seconds is enough, try to find a smaller valid time
+                high = mid - 1;
+            } else {
+                low = mid + 1;    // mid seconds is not enough, increase time
+            }
+        }
+
+        System.out.println(ans);
+    }
+}
