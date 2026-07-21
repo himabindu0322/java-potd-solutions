@@ -1,0 +1,40 @@
+import java.util.*;
+
+public class Main {
+    public static int userLogic(int[] arr) {
+        int res = 0;
+        Stack<Integer> stack = new Stack<>();
+
+        for (int num : arr) {
+            // Maintain monotonic decreasing order in stack
+            while (!stack.isEmpty() && stack.peek() <= num) {
+                int mid = stack.pop();
+                if (!stack.isEmpty()) {
+                    // Combine mid with its smaller neighbor (either left or right)
+                    res += mid * Math.min(stack.peek(), num);
+                } else {
+                    res += mid * num;
+                }
+            }
+            stack.push(num);
+        }
+
+        // Process remaining elements in stack
+        while (stack.size() > 1) {
+            res += stack.pop() * stack.peek();
+        }
+
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+        int result = userLogic(arr);
+        System.out.println(result);
+    }
+}
