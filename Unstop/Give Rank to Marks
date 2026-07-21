@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class Main {
+    public static void replaceMarksToRank(int n, int[] marks) {
+        // Clone original marks and sort them in descending order
+        Integer[] sortedMarks = new Integer[n];
+        for (int i = 0; i < n; i++) {
+            sortedMarks[i] = marks[i];
+        }
+        Arrays.sort(sortedMarks, Collections.reverseOrder());
+
+        // Map distinct marks to ranks
+        Map<Integer, Integer> markToRank = new HashMap<>();
+        int currentRank = 1;
+
+        for (int mark : sortedMarks) {
+            if (!markToRank.containsKey(mark)) {
+                markToRank.put(mark, currentRank);
+                currentRank++;
+            }
+        }
+
+        // Replace original marks with assigned ranks
+        for (int i = 0; i < n; i++) {
+            marks[i] = markToRank.get(marks[i]);
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] marks = new int[n];
+        for (int i = 0; i < n; i++) {
+            marks[i] = sc.nextInt();
+        }
+        replaceMarksToRank(n, marks);
+        for (int i = 0; i < n; i++) {
+            System.out.print(marks[i] + " ");
+        }
+    }
+}
