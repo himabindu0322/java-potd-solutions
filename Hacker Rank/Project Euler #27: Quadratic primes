@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    // Helper method to check if a number is prime
+    private static boolean isPrime(int n) {
+        if (n <= 1) return false;
+        if (n == 2 || n == 3) return true;
+        if (n % 2 == 0 || n % 3 == 0) return false;
+        
+        for (int i = 5; i * i <= n; i += 6) {
+            if (n % i == 0 || n % (i + 2) == 0) return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        int N = sc.nextInt();
+
+        int maxPrimes = 0;
+        int bestA = 0;
+        int bestB = 0;
+
+        // b must be prime and <= N
+        for (int b = 2; b <= N; b++) {
+            if (!isPrime(b)) continue;
+
+            // Step through values of 'a'
+            for (int a = -N; a <= N; a++) {
+                int n = 0;
+                
+                // Count consecutive primes generated starting from n = 0
+                while (true) {
+                    int val = n * n + a * n + b;
+                    if (!isPrime(val)) break;
+                    n++;
+                }
+
+                if (n > maxPrimes) {
+                    maxPrimes = n;
+                    bestA = a;
+                    bestB = b;
+                }
+            }
+        }
+
+        // Output best 'a' and 'b' separated by space
+        System.out.println(bestA + " " + bestB);
+    }
+}
