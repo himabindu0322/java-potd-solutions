@@ -1,0 +1,49 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        if (sc.hasNextInt()) {
+            int T = sc.nextInt();
+            
+            while (T-- > 0) {
+                int N = sc.nextInt();
+                int[] A = new int[N];
+                
+                int zeroCount = 0;
+                List<Integer> nonZeros = new ArrayList<>();
+                
+                for (int i = 0; i < N; i++) {
+                    A[i] = sc.nextInt();
+                    if (A[i] == 0) {
+                        zeroCount++;
+                    } else {
+                        nonZeros.add(A[i]);
+                    }
+                }
+                
+                // Construct the lexicographically smallest array:
+                // 1. Put all 0s at the front
+                // 2. Append all non-zero elements (1s and 2s) in their original relative order
+                StringBuilder sb = new StringBuilder();
+                
+                for (int i = 0; i < zeroCount; i++) {
+                    sb.append(0).append(" ");
+                }
+                
+                for (int val : nonZeros) {
+                    sb.append(val).append(" ");
+                }
+                
+                System.out.println(sb.toString().trim());
+            }
+        }
+        
+        sc.close();
+    }
+}
