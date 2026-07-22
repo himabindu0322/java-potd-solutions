@@ -1,0 +1,42 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        // Read the number of test cases
+        if (sc.hasNextInt()) {
+            int T = sc.nextInt();
+            
+            while (T-- > 0) {
+                int count60 = 0; // Tracks exams with score >= 60
+                int count30 = 0; // Tracks exams with score >= 30
+                
+                // Read 5 exam scores
+                for (int i = 0; i < 5; i++) {
+                    int score = sc.nextInt();
+                    
+                    if (score >= 60) {
+                        count60++;
+                    }
+                    if (score >= 30) {
+                        count30++;
+                    }
+                }
+                
+                // Check both passing criteria
+                if (count60 >= 2 && count30 >= 4) {
+                    System.out.println("Pass");
+                } else {
+                    System.out.println("Fail");
+                }
+            }
+        }
+        
+        sc.close();
+    }
+}
