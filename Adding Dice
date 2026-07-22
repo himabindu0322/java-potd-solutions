@@ -1,0 +1,25 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        // Read the result of the first dice roll
+        int X = sc.nextInt();
+        
+        // A standard 6-sided die can show values from 1 to 6.
+        // To get a sum of 9, the second die must show (9 - X).
+        // Check if the required value is between 1 and 6.
+        if (X >= 3) {
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
+        }
+        
+        sc.close();
+    }
+}
