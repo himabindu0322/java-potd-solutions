@@ -1,0 +1,29 @@
+import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+class Solution {
+    public boolean canRepresentBST(List<Integer> arr) {
+        int root = Integer.MIN_VALUE;
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        for (int value : arr) {
+            // If we find an element in the right subtree smaller than 
+            // the root of the current subtree, it violates BST properties.
+            if (value < root) {
+                return false;
+            }
+
+            // Keep popping elements smaller than value
+            // The last popped element becomes the new root boundary
+            while (!stack.isEmpty() && stack.peek() < value) {
+                root = stack.pop();
+            }
+
+            // Push current value to stack
+            stack.push(value);
+        }
+
+        return true;
+    }
+}
