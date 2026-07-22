@@ -1,0 +1,57 @@
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+public class Solution {
+
+    private static final BigInteger MOD = BigInteger.valueOf(1000000007L);
+    private static final BigInteger SIX_INV = BigInteger.valueOf(6).modInverse(MOD);
+    private static final BigInteger TWO_INV = BigInteger.valueOf(2).modInverse(MOD);
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int T = sc.nextInt();
+        StringBuilder sb = new StringBuilder();
+
+        while (T-- > 0) {
+            long n = sc.nextLong();
+
+            if (n == 1) {
+                sb.append(1).append("\n");
+                continue;
+            }
+
+            // k = (N - 1) / 2
+            BigInteger k = BigInteger.valueOf((n - 1) / 2).mod(MOD);
+            BigInteger kPlus1 = k.add(BigInteger.ONE).mod(MOD);
+            BigInteger twoKPlus1 = k.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE).mod(MOD);
+
+            // sum_x2 = k * (k + 1) * (2k + 1) / 6
+            BigInteger sumX2 = k.multiply(kPlus1).mod(MOD)
+                                .multiply(twoKPlus1).mod(MOD)
+                                .multiply(SIX_INV).mod(MOD);
+
+            // sum_x = k * (k + 1) / 2
+            BigInteger sumX = k.multiply(kPlus1).mod(MOD)
+                               .multiply(TWO_INV).mod(MOD);
+
+            // term1 = 16 * sum_x2
+            BigInteger term1 = BigInteger.valueOf(16).multiply(sumX2).mod(MOD);
+
+            // term2 = 4 * sum_x
+            BigInteger term2 = BigInteger.valueOf(4).multiply(sumX).mod(MOD);
+
+            // term3 = 4 * k
+            BigInteger term3 = BigInteger.valueOf(4).multiply(k).mod(MOD);
+
+            // Total Sum = 16*sumX2 + 4*sumX + 4*k + 1
+            BigInteger totalSum = term1.add(term2).add(term3).add(BigInteger.ONE).mod(MOD);
+
+            sb.append(totalSum).append("\n");
+        }
+
+        System.out.print(sb.toString());
+    }
+}
