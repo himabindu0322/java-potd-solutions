@@ -1,0 +1,55 @@
+import java.util.*;
+
+public class Main {
+    public static List<List<Integer>> userLogic(int n, List<Integer> arr) {
+        // Step 1: Sort the array
+        Collections.sort(arr);
+
+        List<List<Integer>> result = new ArrayList<>();
+        int index = 0;
+        int level = 0;
+
+        // Step 2: Slice the array level by level
+        while (index < n) {
+            int levelSize = 1 << level; // 2^level elements in this level
+            List<Integer> currentLevel = new ArrayList<>();
+
+            // Take up to levelSize elements for the current level
+            for (int i = 0; i < levelSize && index < n; i++) {
+                currentLevel.add(arr.get(index++));
+            }
+
+            // Step 3: Reverse odd levels for zigzag order
+            if (level % 2 == 1) {
+                Collections.reverse(currentLevel);
+            }
+
+            result.add(currentLevel);
+            level++;
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int n = sc.nextInt();
+        List<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            arr.add(sc.nextInt());
+        }
+
+        List<List<Integer>> result = userLogic(n, arr);
+
+        // Format output
+        for (List<Integer> row : result) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < row.size(); i++) {
+                sb.append(row.get(i)).append(" ");
+            }
+            System.out.println(sb.toString().trim());
+        }
+    }
+}
