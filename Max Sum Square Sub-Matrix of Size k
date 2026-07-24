@@ -1,0 +1,40 @@
+class Solution {
+    public int maximumSum(int[][] mat, int k) {
+        int n = mat.length;
+        
+        // 2D Prefix sum array of size (n+1) x (n+1)
+        int[][] pref = new int[n + 1][n + 1];
+        
+        // Build the prefix sum array
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                pref[i + 1][j + 1] = mat[i][j] 
+                                    + pref[i][j + 1] 
+                                    + pref[i + 1][j] 
+                                    - pref[i][j];
+            }
+        }
+        
+        int maxSum = Integer.MIN_VALUE;
+        
+        // Iterate through all possible k x k sub-grids
+        // (r, c) represents the top-left 1-based index in pref array
+        for (int r = 1; r <= n - k + 1; r++) {
+            for (int c = 1; c <= n - k + 1; c++) {
+                // Bottom-right 1-based coordinates in pref array
+                int r2 = r + k - 1;
+                int c2 = c + k - 1;
+                
+                // Inclusion-Exclusion principle for range sum query
+                int currentSum = pref[r2][c2] 
+                                - pref[r - 1][c2] 
+                                - pref[r2][c - 1] 
+                                + pref[r - 1][c - 1];
+                
+                maxSum = Math.max(maxSum, currentSum);
+            }
+        }
+        
+        return maxSum;
+    }
+}
