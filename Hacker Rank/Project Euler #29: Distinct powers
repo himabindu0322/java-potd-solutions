@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextLong()) return;
+        
+        long N = scanner.nextLong();
+        
+        // Max power length k such that 2^k <= N (since N <= 100,000, max k = 16)
+        int maxK = 0;
+        while ((1L << (maxK + 1)) <= N) {
+            maxK++;
+        }
+        
+        // duplicateCount[k] stores how many duplicate terms are generated 
+        // by a base that is exponent 'k' of a smaller root base (e.g., a = root^k)
+        long[] duplicateCount = new long[maxK + 1];
+        Set<Integer> seenExponents = new HashSet<>();
+        
+        int currentDuplicates = 0;
+        for (int k = 1; k <= maxK; k++) {
+            for (int b = 2; b <= N; b++) {
+                int exp = k * b;
+                if (seenExponents.contains(exp)) {
+                    currentDuplicates++;
+                } else {
+                    seenExponents.add(exp);
+                }
+            }
+            duplicateCount[k] = currentDuplicates;
+        }
+        
+        boolean[] visited = new boolean[(int) N + 1];
+        long duplicatesTotal = 0;
+        
+        // Loop through all potential root bases
+        for (long a = 2; a <= N; a++) {
+            if (visited[(int) a]) continue;
+            
+            // Count how many powers of 'a' stay <= N
+            int k = 0;
+            long val = a;
+            while (val <= N) {
+                visited[(int) val] = true;
+                k++;
+                val *= a;
+            }
+            
+            duplicatesTotal += duplicateCount[k];
+        }
+        
+        // Total terms = (N - 1)^2 minus total duplicates
+        long totalTerms = (N - 1) * (N - 1);
+        long result = totalTerms - duplicatesTotal;
+        
+        System.out.println(result);
+    }
+}
