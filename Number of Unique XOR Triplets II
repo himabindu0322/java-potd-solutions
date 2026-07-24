@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int uniqueXorTriplets(int[] nums) {
+        // Step 1: Collect unique elements from nums
+        boolean[] exists = new boolean[2048];
+        int uniqueCount = 0;
+        for (int x : nums) {
+            if (!exists[x]) {
+                exists[x] = true;
+                uniqueCount++;
+            }
+        }
+        
+        int[] U = new int[uniqueCount];
+        int idx = 0;
+        for (int x = 1; x < 2048; x++) {
+            if (exists[x]) {
+                U[idx++] = x;
+            }
+        }
+
+        // Step 2: Compute all unique pair XOR values
+        boolean[] seenPair = new boolean[2048];
+        int[] pairList = new int[2048];
+        int pairCount = 0;
+
+        for (int i = 0; i < uniqueCount; i++) {
+            for (int j = i; j < uniqueCount; j++) {
+                int pairXor = U[i] ^ U[j];
+                if (!seenPair[pairXor]) {
+                    seenPair[pairXor] = true;
+                    pairList[pairCount++] = pairXor;
+                }
+            }
+        }
+
+        // Step 3: Combine unique pair XORs with each unique element to get triplet XORs
+        boolean[] seenTriplet = new boolean[2048];
+        int ans = 0;
+
+        for (int p = 0; p < pairCount; p++) {
+            int pairVal = pairList[p];
+            for (int u : U) {
+                int tripletXor = pairVal ^ u;
+                if (!seenTriplet[tripletXor]) {
+                    seenTriplet[tripletXor] = true;
+                    ans++;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
