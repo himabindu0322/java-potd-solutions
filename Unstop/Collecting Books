@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static long solve(int n, int[] arr) {
+        long totalRetrievalTime = 0;
+        int maxBooks = 0;
+
+        for (int i = 0; i < n; i++) {
+            totalRetrievalTime += arr[i];
+            if (arr[i] > maxBooks) {
+                maxBooks = arr[i];
+            }
+        }
+
+        // Map book counts to the maximum shelf distance from the desk
+        // Since arr[i] can be up to 10^9, we use a map or coordinate compression / TreeMap
+        TreeMap<Integer, Integer> countToMaxDist = new TreeMap<>();
+
+        for (int i = 0; i < n; i++) {
+            int dist = n - i; // Distance from desk (shelf N is at index n-1, distance 1)
+            countToMaxDist.put(arr[i], Math.max(countToMaxDist.getOrDefault(arr[i], 0), dist));
+        }
+
+        // We need to sum travel time for k from 1 to maxBooks.
+        // For trip k, distance is max(dist) for all shelves with arr[i] >= k.
+        // We can iterate through the entrySet of TreeMap in reverse.
+        long totalTravelTime = 0;
+        int currentMaxDist = 0;
+        int prevK = maxBooks + 1;
+
+        for (Map.Entry<Integer, Integer> entry : countToMaxDist.descendingMap().entrySet()) {
+            int k = entry.getKey();
+            int dist = entry.getValue();
+
+            // For trips from k to prevK - 1, the max distance was currentMaxDist
+            if (prevK <= maxBooks) {
+                totalTravelTime += (long) currentMaxDist * (prevK - k);
+            }
+
+            currentMaxDist = Math.max(currentMaxDist, dist);
+            prevK = k;
+        }
+
+        // Add the remaining trips from 1 to prevK - 1
+        if (prevK <= maxBooks) {
+            totalTravelTime += (long) currentMaxDist * (prevK - 1 + 1); // trips from 1 to prevK - 1
+        }
+
+        return totalRetrievalTime + totalTravelTime;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        String line = br.readLine();
+        if (line == null || line.trim().isEmpty()) return;
+        
+        int n = Integer.parseInt(line.trim());
+        int[] arr = new int[n];
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        long result = solve(n, arr);
+        System.out.println(result);
+    }
+}
