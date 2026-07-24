@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class Solution {
+    public static int[] findArray(int n, int[] subsetSum) {
+        Arrays.sort(subsetSum);
+        
+        List<Integer> current = new ArrayList<>();
+        for (int val : subsetSum) {
+            current.add(val);
+        }
+        
+        int[] result = new int[n];
+        
+        for (int step = 0; step < n; step++) {
+            // Difference between second smallest and smallest
+            int num = current.get(1) - current.get(0);
+            
+            List<Integer> L = new ArrayList<>();
+            List<Integer> R = new ArrayList<>();
+            
+            Map<Integer, Integer> countMap = new HashMap<>();
+            for (int val : current) {
+                countMap.put(val, countMap.getOrDefault(val, 0) + 1);
+            }
+            
+            // Pair up each x with x + num
+            for (int x : current) {
+                if (countMap.getOrDefault(x, 0) > 0) {
+                    L.add(x);
+                    R.add(x + num);
+                    
+                    countMap.put(x, countMap.get(x) - 1);
+                    countMap.put(x + num, countMap.get(x + num) - 1);
+                }
+            }
+            
+            // Check if L contains 0 to decide sign (+num vs -num)
+            if (L.contains(0)) {
+                result[step] = num;
+                current = L;
+            } else {
+                result[step] = -num;
+                current = R;
+            }
+        }
+        
+        return result;
+    }
+}
