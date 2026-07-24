@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+public class Main {
+    /**
+     * Counts the total number of unique non-empty strings/words 
+     * that can be formed using the given stickers.
+     */
+    public static int countUniqueStrings(String stickers) {
+        if (stickers == null || stickers.isEmpty()) {
+            return 0;
+        }
+
+        // Count frequency of each uppercase character
+        int[] freq = new int[26];
+        for (char c : stickers.toCharArray()) {
+            if (c >= 'A' && c <= 'Z') {
+                freq[c - 'A']++;
+            }
+        }
+
+        return backtrack(freq);
+    }
+
+    private static int backtrack(int[] freq) {
+        int count = 0;
+
+        for (int i = 0; i < 26; i++) {
+            if (freq[i] > 0) {
+                // Form a unique string ending with character (char)('A' + i)
+                count++;
+
+                // Use one instance of character i and recurse
+                freq[i]--;
+                count += backtrack(freq);
+                
+                // Backtrack (restore count)
+                freq[i]++;
+            }
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String stickers = scanner.nextLine().trim();
+            int result = countUniqueStrings(stickers);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
