@@ -1,0 +1,58 @@
+/* Structure of Binary Tree Node
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+class Solution {
+    private int maxLen = 0;
+
+    public int longestConsecutive(Node root) {
+        if (root == null) {
+            return -1;
+        }
+
+        maxLen = 0;
+        
+        // Start DFS with the root node, initial path length of 1
+        dfs(root, 1);
+
+        // If the max length found is less than 2, return -1 per constraints
+        return maxLen < 2 ? -1 : maxLen;
+    }
+
+    private void dfs(Node node, int currentLen) {
+        if (node == null) {
+            return;
+        }
+
+        // Track the maximum consecutive path length seen so far
+        maxLen = Math.max(maxLen, currentLen);
+
+        // Check left child
+        if (node.left != null) {
+            if (node.left.data == node.data + 1) {
+                dfs(node.left, currentLen + 1);
+            } else {
+                dfs(node.left, 1); // Reset length to 1
+            }
+        }
+
+        // Check right child
+        if (node.right != null) {
+            if (node.right.data == node.data + 1) {
+                dfs(node.right, currentLen + 1);
+            } else {
+                dfs(node.right, 1); // Reset length to 1
+            }
+        }
+    }
+}
