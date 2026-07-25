@@ -1,0 +1,93 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int N = scanner.nextInt();
+        scanner.close();
+
+        // Create digits array containing 1 to N
+        int[] digits = new int[N];
+        for (int i = 0; i < N; i++) {
+            digits[i] = i + 1;
+        }
+
+        Set<Long> validProducts = new HashSet<>();
+
+        // Generate all permutations of digits
+        do {
+            // Try all possible splits for lenA, lenB, and lenC = N - lenA - lenB
+            for (int lenA = 1; lenA < N; lenA++) {
+                for (int lenB = 1; lenB < N - lenA; lenB++) {
+                    int lenC = N - lenA - lenB;
+
+                    // c must have at least as many digits as a or b
+                    if (lenC < lenA || lenC < lenB) continue;
+
+                    long a = 0;
+                    int pos = 0;
+                    for (int i = 0; i < lenA; i++) {
+                        a = a * 10 + digits[pos++];
+                    }
+
+                    long b = 0;
+                    for (int i = 0; i < lenB; i++) {
+                        b = b * 10 + digits[pos++];
+                    }
+
+                    long c = 0;
+                    for (int i = 0; i < lenC; i++) {
+                        c = c * 10 + digits[pos++];
+                    }
+
+                    if (a * b == c) {
+                        validProducts.add(c);
+                    }
+                }
+            }
+        } while (nextPermutation(digits));
+
+        // Sum up all unique products
+        long sum = 0;
+        for (long prod : validProducts) {
+            sum += prod;
+        }
+
+        System.out.println(sum);
+    }
+
+    // Standard lexicographical next permutation helper method
+    private static boolean nextPermutation(int[] array) {
+        int i = array.length - 2;
+        while (i >= 0 && array[i] >= array[i + 1]) {
+            i--;
+        }
+        if (i < 0) return false;
+
+        int j = array.length - 1;
+        while (array[j] <= array[i]) {
+            j--;
+        }
+
+        swap(array, i, j);
+        reverse(array, i + 1, array.length - 1);
+        return true;
+    }
+
+    private static void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    private static void reverse(int[] array, int start, int end) {
+        while (start < end) {
+            swap(array, start, end);
+            start++;
+            end--;
+        }
+    }
+}
