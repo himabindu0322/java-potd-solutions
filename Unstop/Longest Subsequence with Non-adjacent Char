@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int longestSubsequence(String s) {
+        // dp[c] stores the length of the longest valid subsequence ending with character c ('a'..'z')
+        int[] dp = new int[26];
+        int maxLength = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char currentChar = s.charAt(i);
+            int currIndex = currentChar - 'a';
+            
+            int maxPrevLength = 0;
+
+            // Check all possible previous characters ('a' through 'z')
+            for (int prevIndex = 0; prevIndex < 26; prevIndex++) {
+                // Adjacent characters in the alphabet are NOT allowed
+                if (Math.abs(currIndex - prevIndex) != 1) {
+                    maxPrevLength = Math.max(maxPrevLength, dp[prevIndex]);
+                }
+            }
+
+            // Update DP value for the current character
+            dp[currIndex] = maxPrevLength + 1;
+            maxLength = Math.max(maxLength, dp[currIndex]);
+        }
+
+        return maxLength;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String s = scanner.nextLine().trim();
+            int result = longestSubsequence(s);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
