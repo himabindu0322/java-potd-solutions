@@ -1,0 +1,47 @@
+import java.util.Scanner;
+
+public class Main {
+    public static float water_jug(float X, int i, int j) {
+        // Base edge cases
+        if (j > i || i <= 0 || j <= 0) {
+            return 0.0f;
+        }
+
+        // DP table to store amount of water poured into glass (row, col)
+        // Size (i + 1) x (i + 1) is sufficient to process up to target row i
+        double[][] dp = new double[i + 1][i + 1];
+
+        // Pour initial amount X into top glass (row 1, col 1)
+        dp[1][1] = X;
+
+        // Process row by row
+        for (int r = 1; r < i; r++) {
+            for (int c = 1; c <= r; c++) {
+                // Check if current glass overflows
+                if (dp[r][c] > 1.0) {
+                    double overflow = dp[r][c] - 1.0;
+                    
+                    // Glass is full now
+                    dp[r][c] = 1.0;
+
+                    // Distribute excess water equally to adjacent bottom glasses
+                    dp[r + 1][c] += overflow / 2.0;
+                    dp[r + 1][c + 1] += overflow / 2.0;
+                }
+            }
+        }
+
+        // Return amount in (i, j), capped at 1.0 liter
+        return (float) Math.min(1.0, dp[i][j]);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int i = scanner.nextInt();
+        int j = scanner.nextInt();
+        float X = scanner.nextFloat();
+        
+        float result = water_jug(X, i, j);
+        System.out.printf("%.6f", result);
+    }
+}
