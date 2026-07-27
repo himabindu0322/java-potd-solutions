@@ -1,0 +1,24 @@
+import java.util.*;
+
+public class Main {
+    public static String determine_winner(int n, int[] balls) {
+        // Since N is even, the first player (Aryan) can always force a win or tie 
+        // by choosing either all odd-indexed or all even-indexed elements.
+        return "Aryan";
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int n = scanner.nextInt();
+        int[] balls = new int[n];
+        for (int i = 0; i < n; i++) {
+            balls[i] = scanner.nextInt();
+        }
+        scanner.close();
+        
+        String result = determine_winner(n, balls);
+        System.out.println(result);
+    }
+}
