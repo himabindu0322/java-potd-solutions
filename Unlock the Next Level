@@ -1,0 +1,25 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		
+		// Read X (required XP) and Y (current XP)
+		int x = sc.nextInt();
+		int y = sc.nextInt();
+		
+		// Check if current XP is already enough
+		if (y >= x) {
+			System.out.println("UNLOCKED");
+		} else {
+			// Calculate the remaining XP needed
+			System.out.println(x - y);
+		}
+		
+		sc.close();
+	}
+}
