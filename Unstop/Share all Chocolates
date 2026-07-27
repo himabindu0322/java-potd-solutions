@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class Main {
+    public static void can_partition_chocolates(int n, int[] chocolates) {
+        int sum = 0;
+        for (int ch : chocolates) {
+            sum += ch;
+        }
+
+        // If total chocolates count is odd, equal partition is impossible
+        if (sum % 2 != 0) {
+            System.out.println("NO");
+            return;
+        }
+
+        int target = sum / 2;
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true; // Base case: 0 sum is always possible with empty subset
+
+        for (int chocolate : chocolates) {
+            for (int j = target; j >= chocolate; j--) {
+                dp[j] = dp[j] || dp[j - chocolate];
+            }
+        }
+
+        if (dp[target]) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+
+        int n = scanner.nextInt();
+        int[] chocolates = new int[n];
+        for (int i = 0; i < n; i++) {
+            chocolates[i] = scanner.nextInt();
+        }
+
+        can_partition_chocolates(n, chocolates);
+    }
+}
