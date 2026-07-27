@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+        
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = sc.nextInt();
+        }
+        
+        // Count total adjacent duplicate pairs
+        int duplicateCount = 0;
+        for (int i = 0; i < n - 1; i++) {
+            if (a[i] == a[i + 1]) {
+                duplicateCount++;
+            }
+        }
+        
+        // Minimum length is original size minus total redundant adjacent elements
+        System.out.println(n - duplicateCount);
+        
+        sc.close();
+    }
+}
