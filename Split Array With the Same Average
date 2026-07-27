@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Solution {
+    public static Boolean splitListWithSameAverage(int[] strengths) {
+        int n = strengths.length;
+        if (n < 2) return false;
+
+        int totalSum = 0;
+        for (int x : strengths) {
+            totalSum += x;
+        }
+
+        // DP table: dp[i] contains a set of all possible sums formed by using 'i' elements
+        Set<Integer>[] dp = new HashSet[n / 2 + 1];
+        for (int i = 0; i <= n / 2; i++) {
+            dp[i] = new HashSet<>();
+        }
+        
+        // Base case: 0 elements give a sum of 0
+        dp[0].add(0);
+
+        // Build DP set for subsets
+        for (int num : strengths) {
+            for (int i = n / 2; i >= 1; i--) {
+                for (int prevSum : dp[i - 1]) {
+                    dp[i].add(prevSum + num);
+                }
+            }
+        }
+
+        // Check if there exists any valid subset size k (from 1 to N/2)
+        for (int k = 1; k <= n / 2; k++) {
+            // Target sum must be an integer: (totalSum * k) % n == 0
+            if ((totalSum * k) % n == 0) {
+                int targetSum = (totalSum * k) / n;
+                if (dp[k].contains(targetSum)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+}
