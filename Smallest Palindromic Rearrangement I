@@ -1,0 +1,33 @@
+class Solution {
+    public String smallestPalindrome(String s) {
+        int[] freq = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            freq[s.charAt(i) - 'a']++;
+        }
+
+        StringBuilder leftHalf = new StringBuilder();
+        char midChar = 0;
+
+        // Collect the left half in alphabetical order
+        for (int i = 0; i < 26; i++) {
+            if (freq[i] % 2 != 0) {
+                midChar = (char) ('a' + i);
+            }
+            // Add half of the current character's frequency
+            for (int j = 0; j < freq[i] / 2; j++) {
+                leftHalf.append((char) ('a' + i));
+            }
+        }
+
+        // Create the right half by reversing the left half
+        StringBuilder rightHalf = new StringBuilder(leftHalf).reverse();
+
+        // Combine left, middle (if odd length), and right
+        if (midChar != 0) {
+            leftHalf.append(midChar);
+        }
+        leftHalf.append(rightHalf);
+
+        return leftHalf.toString();
+    }
+}
