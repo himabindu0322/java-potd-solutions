@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int N = sc.nextInt();
+
+        // Max possible rotation value can go up to 1,000,000
+        int MAX = 1000000;
+        boolean[] isPrime = new boolean[MAX];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = false;
+        isPrime[1] = false;
+
+        // Sieve of Eratosthenes
+        for (int i = 2; i * i < MAX; i++) {
+            if (isPrime[i]) {
+                for (int j = i * i; j < MAX; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+
+        long totalSum = 0;
+
+        // Check each number i below N
+        for (int i = 2; i < N; i++) {
+            if (!isPrime[i]) continue;
+
+            // Find number of digits and the highest power of 10 (multiplier)
+            int temp = i;
+            int numDigits = 0;
+            int pow10 = 1;
+            while (temp > 0) {
+                numDigits++;
+                if (temp >= 10) {
+                    pow10 *= 10;
+                }
+                temp /= 10;
+            }
+
+            boolean isCircular = true;
+            int rotated = i;
+
+            // Generate and check all rotations
+            for (int r = 0; r < numDigits; r++) {
+                if (rotated >= MAX || !isPrime[rotated]) {
+                    isCircular = false;
+                    break;
+                }
+                // Rotate left: move leftmost digit to the rightmost position
+                int firstDigit = rotated / pow10;
+                int rem = rotated % pow10;
+                rotated = rem * 10 + firstDigit;
+            }
+
+            if (isCircular) {
+                totalSum += i;
+            }
+        }
+
+        System.out.println(totalSum);
+    }
+}
