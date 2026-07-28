@@ -1,0 +1,23 @@
+import java.util.Arrays;
+
+class Solution {
+    int minSubsets(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+
+        // Sort the array to bring consecutive numbers together
+        Arrays.sort(arr);
+
+        int count = 1; // At least one subset if array is non-empty
+
+        // Count how many times the consecutive chain breaks
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] != arr[i - 1] + 1) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
