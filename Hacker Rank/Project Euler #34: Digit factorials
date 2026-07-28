@@ -1,0 +1,40 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        int N = sc.nextInt();
+
+        // Precompute factorials from 0! to 9!
+        int[] fact = new int[10];
+        fact[0] = 1;
+        for (int i = 1; i <= 9; i++) {
+            fact[i] = fact[i - 1] * i;
+        }
+
+        long totalSum = 0;
+
+        // Check numbers from 10 up to N - 1
+        for (int i = 10; i < N; i++) {
+            int temp = i;
+            int digitFactSum = 0;
+
+            // Compute sum of factorials of digits
+            while (temp > 0) {
+                digitFactSum += fact[temp % 10];
+                temp /= 10;
+            }
+
+            // Check if the sum of factorials of digits is divisible by i
+            if (digitFactSum % i == 0) {
+                totalSum += i;
+            }
+        }
+
+        System.out.println(totalSum);
+    }
+}
