@@ -1,0 +1,59 @@
+import java.util.Scanner;
+
+public class Main {
+    private static final long MOD = 998244353;
+
+    private static long modPow(long base, long exp) {
+        long res = 1;
+        base %= MOD;
+        while (exp > 0) {
+            if ((exp & 1) == 1) res = (res * base) % MOD;
+            base = (base * base) % MOD;
+            exp >>= 1;
+        }
+        return res;
+    }
+
+    public static int user_logic(int n, int d) {
+        if (d >= 2 * n) {
+            return 0;
+        }
+
+        long ans = 0;
+
+        // Case 1: Vertical Ancestor-Descendant pairs
+        if (d < n) {
+            long lcas = (modPow(2, n - d) - 1 + MOD) % MOD;
+            long verticalPairs = (modPow(2, d) * lcas) % MOD;
+            ans = (ans + 2 * verticalPairs) % MOD;
+        }
+
+        // Case 2: Split pairs where d1 + d2 = D
+        for (int d1 = 1; d1 < d; d1++) {
+            int d2 = d - d1;
+            int maxDepth = Math.max(d1, d2);
+
+            if (maxDepth < n) {
+                long lcas = (modPow(2, n - maxDepth) - 1 + MOD) % MOD;
+                // 2 * 2^(d1-1) * 2^(d2-1) = 2^(D-1) choices per LCA
+                long choicesPerLCA = modPow(2, d - 1);
+                long splitPairs = (choicesPerLCA * lcas) % MOD;
+                
+                ans = (ans + splitPairs) % MOD;
+            }
+        }
+
+        return (int) ans;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int n = sc.nextInt();
+        int d = sc.nextInt();
+
+        int result = user_logic(n, d);
+        System.out.println(result);
+    }
+}
