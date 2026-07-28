@@ -1,0 +1,27 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int cycle_end(int n, int k) {
+        int survivor = 0; // Base case for 1 person (0-indexed)
+        
+        // Iteratively calculate the survivor index for 2 to n people
+        for (int i = 2; i <= n; i++) {
+            survivor = (survivor + k) % i;
+        }
+        
+        return survivor;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int t = scanner.nextInt();
+        for (int i = 0; i < t; i++) {
+            int n = scanner.nextInt();
+            int k = scanner.nextInt();
+            int result = cycle_end(n, k);
+            System.out.println(result);
+        }
+    }
+}
