@@ -1,0 +1,91 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+class Codechef {
+    public static void main(String[] args) throws IOException {
+        FastScanner sc = new FastScanner();
+        StringBuilder sb = new StringBuilder();
+        
+        if (!sc.hasNext()) return;
+        int t = sc.nextInt();
+        
+        while (t-- > 0) {
+            int n = sc.nextInt();
+            long[] a = new long[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = sc.nextLong();
+            }
+            
+            boolean possible = true;
+            long lMax = Long.MIN_VALUE;
+            long rMin = Long.MAX_VALUE;
+            
+            // Compare symmetric pairs (A[i], A[n - 1 - i])
+            for (int i = 0; i < n / 2; i++) {
+                long u = a[i];
+                long v = a[n - 1 - i];
+                long diff = Math.abs(u - v);
+                
+                if (diff == 0) {
+                    // Pair is already equal, any X keeps them equal
+                    continue;
+                } else if (diff == 2) {
+                    // To make u and v equal, X must be in [min(u, v), max(u, v) - 1]
+                    long minVal = Math.min(u, v);
+                    long maxVal = Math.max(u, v);
+                    
+                    long l = minVal;
+                    long r = maxVal - 1;
+                    
+                    lMax = Math.max(lMax, l);
+                    rMin = Math.min(rMin, r);
+                } else {
+                    // Any other difference (e.g., 1 or > 2) can never be made equal in 1 move
+                    possible = false;
+                    break;
+                }
+            }
+            
+            if (possible && lMax <= rMin) {
+                sb.append("Yes\n");
+            } else {
+                sb.append("No\n");
+            }
+        }
+        
+        System.out.print(sb.toString());
+    }
+
+    // Fast I/O helper
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        boolean hasNext() {
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    String line = br.readLine();
+                    if (line == null) return false;
+                    st = new StringTokenizer(line);
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        String next() {
+            return hasNext() ? st.nextToken() : null;
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+    }
+}
