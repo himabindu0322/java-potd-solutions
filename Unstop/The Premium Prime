@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class Main {
+
+    // Function to check if a number is prime
+    private static boolean isPrime(long num) {
+        if (num < 2) return false;
+        if (num == 2 || num == 3) return true;
+        if (num % 2 == 0 || num % 3 == 0) return false;
+        
+        for (long i = 5; i * i <= num; i += 6) {
+            if (num % i == 0 || num % (i + 2) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static long findSmallestPremiumPrime(long n) {
+        // P must satisfy P <= n / 2 because floor(N / P) >= 2 (smallest prime)
+        for (long p = 2; p <= n / 2; p++) {
+            if (isPrime(p)) {
+                long q = n / p; // floor division
+                if (isPrime(q)) {
+                    return p; // Found the smallest Premium Prime
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLong()) {
+            long n = scanner.nextLong();
+            long result = findSmallestPremiumPrime(n);
+            System.out.println(result);
+        }
+    }
+}
