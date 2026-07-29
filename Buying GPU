@@ -1,0 +1,35 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		
+		int t = sc.nextInt();
+		
+		while (t-- > 0) {
+			int x = sc.nextInt(); // Initial cost
+			int y = sc.nextInt(); // Monthly price increase
+			int z = sc.nextInt(); // Monthly earnings
+			
+			// If monthly earnings are less than or equal to monthly price increase,
+			// Chef will never catch up unless he can afford it in month 1.
+			if (z <= y) {
+				System.out.println("-1");
+			} else {
+				// After M months:
+				// GPU Cost = X + M * Y
+				// Chef's Coins = M * Z
+				// We need: M * Z >= X + M * Y  =>  M * (Z - Y) >= X  =>  M >= X / (Z - Y)
+				// Using integer ceiling division: (X + (Z - Y - 1)) / (Z - Y)
+				int months = (x + (z - y - 1)) / (z - y);
+				System.out.println(months);
+			}
+		}
+		
+		sc.close();
+	}
+}
