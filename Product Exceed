@@ -1,0 +1,45 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int t = sc.nextInt();
+		
+		while (t-- > 0) {
+			int X = sc.nextInt();
+			int Y = sc.nextInt();
+			int P = sc.nextInt();
+			
+			// If initial product is already >= P, 0 operations needed
+			if (X * Y >= P) {
+				System.out.println(0);
+				continue;
+			}
+			
+			int minMoves = Integer.MAX_VALUE;
+			
+			// Iterate over all possible new values of X
+			// X can grow up to P (since X * 1 >= P would require X = P)
+			for (int newX = X; newX <= P; newX++) {
+				// Calculate the required value for newY to satisfy newX * newY >= P
+				int newY = (P + newX - 1) / newX; // Ceiling of P / newX
+				
+				// newY cannot be smaller than its starting value Y
+				newY = Math.max(newY, Y);
+				
+				// Total moves = additions made to X + additions made to Y
+				int moves = (newX - X) + (newY - Y);
+				
+				minMoves = Math.min(minMoves, moves);
+			}
+			
+			System.out.println(minMoves);
+		}
+		
+		sc.close();
+	}
+}
