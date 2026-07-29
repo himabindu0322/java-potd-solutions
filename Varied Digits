@@ -1,0 +1,27 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		
+		// Read the 2-digit integer
+		int x = sc.nextInt();
+		
+		// Extract tens and units digits
+		int tens = x / 10;
+		int units = x % 10;
+		
+		// If digits are different, print "Yes", otherwise "No"
+		if (tens != units) {
+		    System.out.println("Yes");
+		} else {
+		    System.out.println("No");
+		}
+		
+		sc.close();
+	}
+}
