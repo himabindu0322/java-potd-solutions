@@ -1,0 +1,36 @@
+import java.util.*;
+
+public class Solution {
+
+    public static ArrayList<Integer> mergeSortedArrays(ArrayList<Integer> arr1, ArrayList<Integer> arr2) {
+        ArrayList<Integer> result = new ArrayList<>();
+        int i = 0, j = 0;
+        int n = arr1.size();
+        int m = arr2.size();
+
+        // Compare elements from both lists and append the smaller element
+        while (i < n && j < m) {
+            if (arr1.get(i) <= arr2.get(j)) {
+                result.add(arr1.get(i));
+                i++;
+            } else {
+                result.add(arr2.get(j));
+                j++;
+            }
+        }
+
+        // Append remaining elements from arr1, if any
+        while (i < n) {
+            result.add(arr1.get(i));
+            i++;
+        }
+
+        // Append remaining elements from arr2, if any
+        while (j < m) {
+            result.add(arr2.get(j));
+            j++;
+        }
+
+        return result;
+    }
+}
