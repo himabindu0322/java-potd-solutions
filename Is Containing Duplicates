@@ -1,0 +1,22 @@
+/* Time Complexity: O(n)
+   Space Complexity: O(n)
+*/
+
+import java.util.*;
+
+public class Solution {
+
+    public static boolean containsDuplicate(ArrayList<Integer> nums) {
+
+        // Write your code here.
+    Set<Integer> seen = new HashSet<>();
+    for(int num : nums)
+    {
+        if(!seen.add(num))
+        {
+            return true;
+        }
+    }
+        return false;
+    }
+}
