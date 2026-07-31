@@ -1,0 +1,76 @@
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Main {
+    public static int minimumTime(int[][] grid) {
+        int n = grid.length;
+        Queue<int[]> queue = new ArrayDeque<>();
+        int cheeseCount = 0;
+
+        // Step 1: Initialize queue with all rats and count total cheese cells
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j});
+                } else if (grid[i][j] == 1) {
+                    cheeseCount++;
+                }
+            }
+        }
+
+        // If there's no cheese to eat, time taken is 0
+        if (cheeseCount == 0) return 0;
+
+        int time = 0;
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        // Step 2: Multi-source BFS
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            boolean progressed = false;
+
+            for (int i = 0; i < size; i++) {
+                int[] curr = queue.poll();
+                int r = curr[0];
+                int c = curr[1];
+
+                for (int[] dir : directions) {
+                    int nr = r + dir[0];
+                    int nc = c + dir[1];
+
+                    // Check boundaries and if cell contains cheese
+                    if (nr >= 0 && nr < n && nc >= 0 && nc < n && grid[nr][nc] == 1) {
+                        grid[nr][nc] = 2; // Mark as eaten/visited
+                        cheeseCount--;
+                        queue.offer(new int[]{nr, nc});
+                        progressed = true;
+                    }
+                }
+            }
+
+            if (progressed) {
+                time++;
+            }
+        }
+
+        // If all cheese was eaten, return total time; otherwise -1
+        return cheeseCount == 0 ? time : -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int[][] grid = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    grid[i][j] = scanner.nextInt();
+                }
+            }
+            scanner.close();
+            int result = minimumTime(grid);
+            System.out.println(result);
+        }
+    }
+}
