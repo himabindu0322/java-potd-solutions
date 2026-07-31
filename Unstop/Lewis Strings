@@ -1,0 +1,51 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Scanner;
+
+public class Main {
+    public static String reverseParentheses(String s) {
+        int n = s.length();
+        int[] pair = new int[n];
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        // Step 1: Precompute matching parenthesis pairs
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                stack.push(i);
+            } else if (c == ')') {
+                int j = stack.pop();
+                pair[i] = j;
+                pair[j] = i;
+            }
+        }
+
+        // Step 2: Traverse string with direction toggling
+        StringBuilder sb = new StringBuilder(n);
+        int curr = 0;
+        int dir = 1;
+
+        while (curr < n) {
+            char c = s.charAt(curr);
+            if (c == '(' || c == ')') {
+                curr = pair[curr]; // Jump to matching pair
+                dir = -dir;        // Reverse direction
+            } else {
+                sb.append(c);
+            }
+            curr += dir;
+        }
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String s = scanner.nextLine().trim();
+            String result = reverseParentheses(s);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
