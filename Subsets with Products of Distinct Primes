@@ -1,0 +1,71 @@
+import java.util.Arrays;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int[] PRIMES = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+
+    public int countSubsets(int[] arr) {
+        int[] freq = new int[31];
+        for (int num : arr) {
+            freq[num]++;
+        }
+
+        // Calculate 2^(count of 1s) % MOD
+        long onesPower = 1;
+        for (int i = 0; i < freq[1]; i++) {
+            onesPower = (onesPower * 2) % MOD;
+        }
+
+        // Precompute bitmasks for numbers 2 to 30
+        int[] maskOf = new int[31];
+        for (int i = 2; i <= 30; i++) {
+            int mask = 0;
+            int temp = i;
+            boolean isSquareFree = true;
+
+            for (int p = 0; p < PRIMES.length; p++) {
+                int prime = PRIMES[p];
+                if (temp % prime == 0) {
+                    temp /= prime;
+                    if (temp % prime == 0) { // Has repeated prime factor
+                        isSquareFree = false;
+                        break;
+                    }
+                    mask |= (1 << p);
+                }
+            }
+
+            maskOf[i] = isSquareFree ? mask : -1;
+        }
+
+        // DP array: dp[mask] = number of ways to form product with bitmask 'mask'
+        long[] dp = new long[1 << 10]; // 1024 states
+        dp[0] = 1;
+
+        // Process distinct values from 2 to 30
+        for (int num = 2; num <= 30; num++) {
+            if (freq[num] == 0 || maskOf[num] == -1) continue;
+
+            int numMask = maskOf[num];
+            long count = freq[num];
+
+            // Traverse backwards to avoid using the same number frequency multiple times
+            for (int mask = (1 << 10) - 1; mask >= 0; mask--) {
+                if ((mask & numMask) == 0 && dp[mask] > 0) {
+                    dp[mask | numMask] = (dp[mask | numMask] + dp[mask] * count) % MOD;
+                }
+            }
+        }
+
+        // Sum all valid non-empty prime factor product subsets
+        long nonOneSubsets = 0;
+        for (int mask = 1; mask < (1 << 10); mask++) {
+            nonOneSubsets = (nonOneSubsets + dp[mask]) % MOD;
+        }
+
+        // Multiply valid prime subsets by 2^(count of 1s)
+        long total = (nonOneSubsets * onesPower) % MOD;
+
+        return (int) total;
+    }
+}
