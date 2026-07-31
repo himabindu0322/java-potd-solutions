@@ -1,0 +1,64 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.*;
+
+public class Main {
+    @SuppressWarnings("unchecked")
+    public static void userLogic(int n, List<Map.Entry<Integer, String>> orders) {
+        // Create buckets for each table from 0 to n - 1
+        List<String>[] tableOrders = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            tableOrders[i] = new ArrayList<>();
+        }
+
+        // Add orders to corresponding table buckets
+        for (Map.Entry<Integer, String> order : orders) {
+            tableOrders[order.getKey()].add(order.getValue());
+        }
+
+        // Sort orders for each table and build the output string
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            Collections.sort(tableOrders[i]);
+            
+            for (int j = 0; j < tableOrders[i].size(); j++) {
+                sb.append(tableOrders[i].get(j));
+                if (j < tableOrders[i].size() - 1) {
+                    sb.append(" ");
+                }
+            }
+            sb.append("\n");
+        }
+
+        System.out.print(sb.toString());
+    }
+
+    public static void main(String[] args) throws IOException {
+        // Fast I/O using BufferedReader and StringTokenizer for large input size
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer tokenizer = null;
+
+        String line = reader.readLine();
+        if (line == null || line.trim().isEmpty()) return;
+
+        tokenizer = new StringTokenizer(line);
+        int n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
+
+        List<Map.Entry<Integer, String>> orders = new ArrayList<>(m);
+
+        for (int i = 0; i < m; i++) {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                String l = reader.readLine();
+                if (l == null) break;
+                tokenizer = new StringTokenizer(l);
+            }
+            int table = Integer.parseInt(tokenizer.nextToken());
+            String item = tokenizer.nextToken();
+            orders.add(new AbstractMap.SimpleEntry<>(table, item));
+        }
+
+        userLogic(n, orders);
+    }
+}
