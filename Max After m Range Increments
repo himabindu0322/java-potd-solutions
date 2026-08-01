@@ -1,0 +1,32 @@
+class Solution {
+    public int findMax(int n, int[] a, int[] b, int[] k) {
+        int m = a.length;
+        // Use long to prevent integer overflow during prefix sum calculation
+        long[] diff = new long[n + 1];
+
+        // Step 1: Mark range boundaries using Difference Array technique
+        for (int i = 0; i < m; i++) {
+            int start = a[i];
+            int end = b[i];
+            long value = k[i];
+
+            diff[start] += value;
+            if (end + 1 < n) {
+                diff[end + 1] -= value;
+            }
+        }
+
+        // Step 2: Compute prefix sums and track the maximum value
+        long maxVal = 0;
+        long currentSum = 0;
+
+        for (int i = 0; i < n; i++) {
+            currentSum += diff[i];
+            if (currentSum > maxVal) {
+                maxVal = currentSum;
+            }
+        }
+
+        return (int) maxVal;
+    }
+}
