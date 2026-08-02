@@ -1,0 +1,59 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        // Using long to handle larger input values within integer bounds safely
+        long M1 = sc.nextLong();
+        long M2 = sc.nextLong();
+        
+        int[] crashDetails = find_crash_details((int) M1, (int) M2);
+        int crash_time = crashDetails[0];
+        int M1_crash = crashDetails[1];
+        int M2_crash = crashDetails[2];
+        
+        System.out.println(crash_time + " " + M1_crash + " " + M2_crash);
+        
+        int[] prefix_sum = calculate_prefix_sum(new int[]{crash_time, M1_crash, M2_crash});
+        for (int val : prefix_sum) {
+            System.out.print(val + " ");
+        }
+        System.out.println();
+    }
+    
+    public static int[] find_crash_details(int M1, int M2) {
+        long m1 = M1;
+        long m2 = M2;
+        int i = 1;
+        
+        while (true) {
+            if (m1 >= m2) {
+                if (m1 >= i) {
+                    m1 -= i;
+                } else {
+                    break;
+                }
+            } else {
+                if (m2 >= i) {
+                    m2 -= i;
+                } else {
+                    break;
+                }
+            }
+            i++;
+        }
+        
+        return new int[]{i, (int) m1, (int) m2};
+    }
+    
+    public static int[] calculate_prefix_sum(int[] arr) {
+        int[] prefix = new int[arr.length];
+        prefix[0] = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            prefix[i] = prefix[i - 1] + arr[i];
+        }
+        return prefix;
+    }
+}
