@@ -1,0 +1,55 @@
+import java.util.*;
+
+public class Main {
+    public static long userLogic(int n, int[] weights) {
+        // Total nodes = 2^(n+1) - 1
+        int totalNodes = (1 << (n + 1)) - 1;
+        
+        // Map 1-based edge weights W[i] where edge connects node i to node floor(i/2)
+        // W array size = totalNodes + 1
+        long[] W = new long[totalNodes + 1];
+        for (int i = 2; i <= totalNodes; i++) {
+            W[i] = weights[i - 2];
+        }
+
+        // maxPath[i] will store the max path distance from node i down to a leaf
+        long[] maxPath = new long[totalNodes + 1];
+        long totalIncrements = 0;
+
+        // Process nodes in reverse level order (bottom-up from non-leaf nodes)
+        // Non-leaf internal nodes are from (2^n - 1) down to 1
+        int lastInternalNode = (1 << n) - 1;
+
+        for (int i = lastInternalNode; i >= 1; i--) {
+            int left = 2 * i;
+            int right = 2 * i + 1;
+
+            // Effective path length going down left and right subtrees
+            long leftDist = W[left] + maxPath[left];
+            long rightDist = W[right] + maxPath[right];
+
+            // Add the difference needed to equalize both subtrees
+            totalIncrements += Math.abs(leftDist - rightDist);
+
+            // Node i's maximum path to any leaf is max(leftDist, rightDist)
+            maxPath[i] = Math.max(leftDist, rightDist);
+        }
+
+        return totalIncrements;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int n = sc.nextInt();
+            // Total edges = 2^(n+1) - 2
+            int totalEdges = (1 << (n + 1)) - 2;
+            int[] weights = new int[totalEdges];
+            for (int i = 0; i < totalEdges; i++) {
+                weights[i] = sc.nextInt();
+            }
+            long result = userLogic(n, weights);
+            System.out.println(result);
+        }
+    }
+}
