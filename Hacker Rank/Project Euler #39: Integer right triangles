@@ -1,0 +1,67 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    private static final int MAX_N = 5000000;
+    private static final int[] count = new int[MAX_N + 1];
+    private static final int[] bestP = new int[MAX_N + 1];
+
+    public static void main(String[] args) throws IOException {
+        // Step 1: Precompute all right triangle perimeters using Euclid's formula
+        precompute();
+
+        // Step 2: Use Fast I/O to handle up to 10^5 test cases efficiently
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line = br.readLine();
+        if (line == null) return;
+        
+        int t = Integer.parseInt(line.trim());
+        StringBuilder sb = new StringBuilder();
+
+        while (t-- > 0) {
+            int n = Integer.parseInt(br.readLine().trim());
+            sb.append(bestP[n]).append("\n");
+        }
+
+        System.out.print(sb.toString());
+    }
+
+    private static void precompute() {
+        // Generate primitive Pythagorean triples
+        for (long m = 2; 2 * m * m <= MAX_N; m++) {
+            for (long n = 1; n < m; n++) {
+                // m and n must be of opposite parity and coprime
+                if ((m - n) % 2 == 1 && gcd(m, n) == 1) {
+                    long p = 2 * m * (m + n);
+                    
+                    // Increment count for all multiples k * p <= MAX_N
+                    for (int kp = (int) p; kp <= MAX_N; kp += p) {
+                        count[kp]++;
+                    }
+                }
+            }
+        }
+
+        // Precompute the best perimeter p <= i for each index i
+        int maxCount = 0;
+        int best = 0;
+        for (int i = 12; i <= MAX_N; i++) {
+            if (count[i] > maxCount) {
+                maxCount = count[i];
+                best = i;
+            }
+            bestP[i] = best;
+        }
+    }
+
+    // Helper method to calculate Greatest Common Divisor
+    private static long gcd(long a, long b) {
+        while (b != 0) {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
