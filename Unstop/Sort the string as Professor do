@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class Main {
+    public static void solve(String order, String s) {
+        // Step 1: Count frequency of each character in S
+        int[] freq = new int[26];
+        for (char c : s.toCharArray()) {
+            freq[c - 'a']++;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        // Step 2: Append characters according to custom 'order'
+        for (char c : order.toCharArray()) {
+            while (freq[c - 'a'] > 0) {
+                sb.append(c);
+                freq[c - 'a']--;
+            }
+        }
+
+        // Step 3: Append remaining characters in alphabetical order
+        for (int i = 0; i < 26; i++) {
+            while (freq[i] > 0) {
+                sb.append((char) ('a' + i));
+                freq[i]--;
+            }
+        }
+
+        // Print the final rearranged string
+        System.out.println(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String order = sc.next();  // First part of the input is the order string
+        String s = sc.next();      // Second part of the input is the string to be rearranged
+        
+        // Call user logic function
+        solve(order, s);
+    }
+}
