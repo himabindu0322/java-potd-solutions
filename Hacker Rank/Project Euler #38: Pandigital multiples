@@ -1,0 +1,47 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int N = sc.nextInt();
+        int K = sc.nextInt();
+
+        // Check each potential multiplier M < N
+        for (int m = 2; m < N; m++) {
+            StringBuilder sb = new StringBuilder();
+            int i = 1;
+
+            // Concatenate products m * 1, m * 2, ...
+            while (sb.length() < K) {
+                sb.append(m * i);
+                i++;
+            }
+
+            // Check if length is exactly K and it is 1-to-K pandigital
+            if (sb.length() == K && isPandigital(sb.toString(), K)) {
+                System.out.println(m);
+            }
+        }
+    }
+
+    // Helper method to verify if string is 1 to K pandigital
+    private static boolean isPandigital(String str, int k) {
+        boolean[] seen = new boolean[k + 1];
+
+        for (int i = 0; i < str.length(); i++) {
+            int digit = str.charAt(i) - '0';
+
+            // Digit must be between 1 and K, and cannot repeat
+            if (digit < 1 || digit > k || seen[digit]) {
+                return false;
+            }
+            seen[digit] = true;
+        }
+
+        return true;
+    }
+}
