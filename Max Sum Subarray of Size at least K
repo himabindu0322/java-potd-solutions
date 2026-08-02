@@ -1,0 +1,32 @@
+class Solution {
+    public int maxSumWithK(int[] arr, int k) {
+        int n = arr.length;
+        
+        // Step 1: Compute the sum of the first 'k' elements
+        int currentKSum = 0;
+        for (int i = 0; i < k; i++) {
+            currentKSum += arr[i];
+        }
+        
+        int maxSum = currentKSum;
+        
+        // 'maxEndingHere' keeps track of the maximum sum ending at index (i - k)
+        int maxEndingHere = 0;
+        int prevSum = 0; // Cumulative sum of elements before the current window of size k
+        
+        // Step 2: Slide the window of size k from index k to n - 1
+        for (int i = k; i < n; i++) {
+            // Update the window sum of size k
+            currentKSum += arr[i] - arr[i - k];
+            
+            // Apply Kadane's algorithm to the element that just left the k-window (arr[i - k])
+            prevSum += arr[i - k];
+            maxEndingHere = Math.max(0, maxEndingHere + arr[i - k]);
+            
+            // Total sum = sum of current k elements + best non-negative sum before it
+            maxSum = Math.max(maxSum, currentKSum + maxEndingHere);
+        }
+        
+        return maxSum;
+    }
+}
