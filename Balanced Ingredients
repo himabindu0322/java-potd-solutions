@@ -1,0 +1,45 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Scanner sc = new Scanner(System.in);
+        
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        int c = sc.nextInt();
+        int d = sc.nextInt();
+        
+        int[] arr = {a, b, c, d};
+        boolean found = false;
+
+        // Iterate through all 2^4 = 16 subsets
+        // Mask 0 means empty subset (skip mask = 0)
+        for (int mask = 1; mask < 16; mask++) {
+            int sum = 0;
+            
+            for (int i = 0; i < 4; i++) {
+                // If the i-th bit in mask is set, include arr[i] in the sum
+                if ((mask & (1 << i)) != 0) {
+                    sum += arr[i];
+                }
+            }
+            
+            if (sum == 0) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
+        }
+
+        sc.close();
+    }
+}
