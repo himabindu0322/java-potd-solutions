@@ -1,0 +1,37 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		
+		// Read N
+		int n = sc.nextInt();
+		
+		// Read scores
+		int[] score = new int[n];
+		for (int i = 0; i < n; i++) {
+			score[i] = sc.nextInt();
+		}
+		
+		// Sort the array to bring closest scores adjacent to each other
+		Arrays.sort(score);
+		
+		// Find the minimum difference between adjacent elements
+		int minDiff = Integer.MAX_VALUE;
+		for (int i = 1; i < n; i++) {
+			int diff = score[i] - score[i - 1];
+			if (diff < minDiff) {
+				minDiff = diff;
+			}
+		}
+		
+		// Print the minimum difference
+		System.out.println(minDiff);
+		
+		sc.close();
+	}
+}
