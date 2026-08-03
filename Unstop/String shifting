@@ -1,0 +1,39 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class Main {
+
+    public static String applyShifts(int n, String s, int[] shifts) {
+        char[] result = s.toCharArray();
+
+        for (int i = 0; i < n; i++) {
+            int shiftAmount = shifts[i] % 26;
+            int originalPos = result[i] - 'a';
+            int newPos = (originalPos + shiftAmount) % 26;
+            result[i] = (char) ('a' + newPos);
+        }
+
+        return new String(result);
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        String line1 = reader.readLine();
+        if (line1 == null || line1.trim().isEmpty()) return;
+        int n = Integer.parseInt(line1.trim());
+
+        String s = reader.readLine().trim();
+
+        int[] shifts = new int[n];
+        StringTokenizer st = new StringTokenizer(reader.readLine());
+        for (int i = 0; i < n; i++) {
+            shifts[i] = Integer.parseInt(st.nextToken());
+        }
+
+        String finalString = applyShifts(n, s, shifts);
+        System.out.println(finalString);
+    }
+}
