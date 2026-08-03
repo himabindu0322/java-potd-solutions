@@ -1,0 +1,60 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Solution {
+
+    // Helper class to represent an Envelope
+    static class Envelope implements Comparable<Envelope> {
+        int h, w;
+
+        Envelope(int h, int w) {
+            this.h = h;
+            this.w = w;
+        }
+
+        @Override
+        public int compareTo(Envelope other) {
+            if (this.h != other.h) {
+                return Integer.compare(this.h, other.h); // Primary: Ascending height
+            }
+            return Integer.compare(other.w, this.w);     // Secondary: Descending width
+        }
+    }
+
+    public static int findMaxEnvelopes(ArrayList<Integer> height, ArrayList<Integer> width, int n) {
+        if (n == 0) return 0;
+
+        // Step 1: Create array of envelopes and sort
+        Envelope[] envelopes = new Envelope[n];
+        for (int i = 0; i < n; i++) {
+            envelopes[i] = new Envelope(height.get(i), width.get(i));
+        }
+
+        Arrays.sort(envelopes);
+
+        // Step 2: Find LIS on the widths array using Binary Search
+        int[] tails = new int[n];
+        int len = 0;
+
+        for (Envelope env : envelopes) {
+            int w = env.w;
+
+            // Binary search to find insertion point
+            int idx = Arrays.binarySearch(tails, 0, len, w);
+
+            // If not found, binarySearch returns -(insertion point) - 1
+            if (idx < 0) {
+                idx = -(idx + 1);
+            }
+
+            tails[idx] = w;
+
+            // If inserted at the end, expand LIS length
+            if (idx == len) {
+                len++;
+            }
+        }
+
+        return len;
+    }
+}
