@@ -1,0 +1,27 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public List<Integer> findMissingElements(int[] nums) {
+        int minNum = Integer.MAX_VALUE;
+        int maxNum = Integer.MIN_VALUE;
+        boolean[] present = new boolean[101]; // Constraints say nums[i] <= 100
+
+        // Step 1: Find min, max, and mark present numbers
+        for (int num : nums) {
+            minNum = Math.min(minNum, num);
+            maxNum = Math.max(maxNum, num);
+            present[num] = true;
+        }
+
+        // Step 2: Iterate through [minNum, maxNum] and gather missing values
+        List<Integer> result = new ArrayList<>();
+        for (int i = minNum; i <= maxNum; i++) {
+            if (!present[i]) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
+}
