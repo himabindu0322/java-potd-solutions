@@ -1,0 +1,86 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+
+public class Main {
+    public static int calculateDifference(int[] arr) {
+        int maxFort = Integer.MIN_VALUE;
+        TreeSet<Integer> validForts = new TreeSet<>();
+
+        for (int num : arr) {
+            maxFort = Math.max(maxFort, num);
+            if (num > 0) {
+                validForts.add(num);
+            }
+        }
+
+        // If no positive fort exists, no fort can be attacked
+        if (validForts.isEmpty()) {
+            return -1;
+        }
+
+        int maxLength = 0;
+        int minLastFort = Integer.MAX_VALUE;
+
+        int currentStart = -1;
+        int currentPrev = -1;
+        int currentLength = 0;
+
+        for (int num : validForts) {
+            if (currentLength == 0) {
+                currentStart = num;
+                currentPrev = num;
+                currentLength = 1;
+            } else if (num == currentPrev + 1) {
+                currentPrev = num;
+                currentLength++;
+            } else {
+                // Process end of continuous sequence
+                int currentLast = currentPrev;
+                if (currentLength > maxLength) {
+                    maxLength = currentLength;
+                    minLastFort = currentLast;
+                } else if (currentLength == maxLength) {
+                    minLastFort = Math.min(minLastFort, currentLast);
+                }
+
+                // Start new sequence
+                currentStart = num;
+                currentPrev = num;
+                currentLength = 1;
+            }
+        }
+
+        // Final sequence check after loop ends
+        if (currentLength > 0) {
+            int currentLast = currentPrev;
+            if (currentLength > maxLength) {
+                maxLength = currentLength;
+                minLastFort = currentLast;
+            } else if (currentLength == maxLength) {
+                minLastFort = Math.min(minLastFort, currentLast);
+            }
+        }
+
+        return Math.abs(maxFort - (minLastFort + 1));
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line = br.readLine();
+        if (line == null || line.trim().isEmpty()) return;
+
+        int n = Integer.parseInt(line.trim());
+        int[] arr = new int[n];
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        int result = calculateDifference(arr);
+        System.out.println(result);
+    }
+}
