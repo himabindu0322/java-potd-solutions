@@ -1,0 +1,20 @@
+class Solution {
+    public int countMinOperations(int arr[]) {
+        int totalIncrements = 0;
+        int maxDoubles = 0;
+
+        for (int num : arr) {
+            if (num > 0) {
+                // Count set bits (number of +1 operations for this element)
+                totalIncrements += Integer.bitCount(num);
+                
+                // Calculate the number of doubling operations required for this number
+                // 31 - Integer.numberOfLeadingZeros(num) gives floor(log2(num))
+                int doublesNeeded = 31 - Integer.numberOfLeadingZeros(num);
+                maxDoubles = Math.max(maxDoubles, doublesNeeded);
+            }
+        }
+
+        return totalIncrements + maxDoubles;
+    }
+}
