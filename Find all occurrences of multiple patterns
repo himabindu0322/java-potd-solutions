@@ -1,0 +1,35 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Solution {
+    public static int[][] findOccurrences(String S, String[] arr) {
+        int n = arr.length;
+        int[][] result = new int[n][];
+
+        for (int i = 0; i < n; i++) {
+            String pattern = arr[i];
+            int pLen = pattern.length();
+            int sLen = S.length();
+            List<Integer> occurrences = new ArrayList<>();
+
+            // Search for matches in string S
+            if (pLen <= sLen) {
+                for (int j = 0; j <= sLen - pLen; j++) {
+                    if (S.startsWith(pattern, j)) {
+                        occurrences.add(j);
+                    }
+                }
+            }
+
+            // Convert List<Integer> to int[]
+            int[] indices = new int[occurrences.size()];
+            for (int k = 0; k < occurrences.size(); k++) {
+                indices[k] = occurrences.get(k);
+            }
+
+            result[i] = indices;
+        }
+
+        return result;
+    }
+}
