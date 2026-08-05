@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class Main {
+
+    public static Node removeDuplicates(Node head) {
+        Node current = head;
+
+        while (current != null && current.next != null) {
+            if (current.data == current.next.data) {
+                // Skip duplicate node
+                current.next = current.next.next;
+            } else {
+                // Move to next unique node
+                current = current.next;
+            }
+        }
+
+        return head;
+    }
+
+    public static void main(String[] args) throws IOException {
+        // Fast I/O for large inputs (N up to 10^5)
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line = br.readLine();
+        if (line == null || line.trim().isEmpty()) return;
+
+        int n = Integer.parseInt(line.trim());
+        if (n == 0) return;
+
+        String[] elements = br.readLine().trim().split("\\s+");
+
+        // Build the LinkedList
+        Node head = new Node(Integer.parseInt(elements[0]));
+        Node tail = head;
+
+        for (int i = 1; i < n; i++) {
+            tail.next = new Node(Integer.parseInt(elements[i]));
+            tail = tail.next;
+        }
+
+        // Process duplicates
+        head = removeDuplicates(head);
+
+        // Print output
+        StringBuilder sb = new StringBuilder();
+        Node curr = head;
+        while (curr != null) {
+            sb.append(curr.data).append(" ");
+            curr = curr.next;
+        }
+
+        System.out.println(sb.toString().trim());
+    }
+}
