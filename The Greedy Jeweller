@@ -1,0 +1,54 @@
+import java.util.Arrays;
+
+public class Solution {
+    public static int greedyJeweller(int n, int[][] mat) {
+        // Initialize a 3D DP array to memoize overlapping states
+        int[][][] dp = new int[n][n][n];
+        for (int[][] layer : dp) {
+            for (int[] row : layer) {
+                Arrays.fill(row, -1);
+            }
+        }
+        
+        // Start both paths from (0, 0)
+        int maxGold = findMaxGold(0, 0, 0, n, mat, dp);
+        
+        // If maxGold is negative, it means no valid path to the end exists
+        return Math.max(0, maxGold);
+    }
+
+    private static int findMaxGold(int r1, int c1, int r2, int n, int[][] mat, int[][][] dp) {
+        // Calculate c2 based on the property that r1 + c1 == r2 + c2
+        int c2 = r1 + c1 - r2;
+
+        // Base Case 1: Out of bounds or hit a blocked cell
+        if (r1 >= n || c1 >= n || r2 >= n || c2 >= n || mat[r1][c1] == -1 || mat[r2][c2] == -1) {
+            return (int) -1e9; // Return a large negative number representing an invalid path
+        }
+
+        // Base Case 2: Reached the bottom-right destination
+        if (r1 == n - 1 && c1 == n - 1) {
+            return mat[r1][c1]; 
+        }
+
+        // Return memoized result if already calculated
+        if (dp[r1][c1][r2] != -1) {
+            return dp[r1][c1][r2];
+        }
+
+        // Collect gold at the current position
+        int currentGold = (r1 == r2 && c1 == c2) ? mat[r1][c1] : mat[r1][c1] + mat[r2][c2];
+
+        // Explore all 4 possible movement combinations for the next step
+        int rightRight = findMaxGold(r1, c1 + 1, r2, n, mat, dp);       // Both go Right
+        int rightDown  = findMaxGold(r1, c1 + 1, r2 + 1, n, mat, dp);   // P1 Right, P2 Down
+        int downRight  = findMaxGold(r1 + 1, c1, r2, n, mat, dp);       // P1 Down, P2 Right
+        int downDown   = findMaxGold(r1 + 1, c1, r2 + 1, n, mat, dp);   // Both go Down
+
+        // Find the maximum gold collected from the future steps
+        int maxFuture = Math.max(Math.max(rightRight, rightDown), Math.max(downRight, downDown));
+        
+        // Memoize and return the result
+        return dp[r1][c1][r2] = currentGold + maxFuture;
+    }
+}
