@@ -1,0 +1,57 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Main {
+    
+    // Function to decode Gray code (convert Gray code integer back to standard integer)
+    private static int grayToBinary(int n) {
+        int mask = n;
+        while (mask > 0) {
+            mask >>= 1;
+            n ^= mask;
+        }
+        return n;
+    }
+
+    // Function to count primes <= K using Sieve of Eratosthenes
+    private static int countPrimes(int k) {
+        if (k < 2) return 0;
+        
+        boolean[] isPrime = new boolean[k + 1];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = isPrime[1] = false;
+        
+        for (int p = 2; p * p <= k; p++) {
+            if (isPrime[p]) {
+                for (int i = p * p; i <= k; i += p) {
+                    isPrime[i] = false;
+                }
+            }
+        }
+        
+        int count = 0;
+        for (int i = 2; i <= k; i++) {
+            if (isPrime[i]) count++;
+        }
+        
+        return count;
+    }
+
+    public static int minimumOperationsToZero(int n) {
+        // 1. Calculate minimum operations to reduce N to 0
+        int ops = grayToBinary(n);
+        
+        // 2. Count primes <= ops
+        return countPrimes(ops);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int N = scanner.nextInt();
+            int result = minimumOperationsToZero(N);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
