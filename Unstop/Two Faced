@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class Main {
+    private static final int MOD = 998244353;
+
+    public static int userLogic(int n, int[] P, int[] Q) {
+        // Fast lookup: posInP[x] = index i where P[i] == x
+        int[] posInP = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            posInP[P[i]] = i;
+        }
+
+        // Precompute Lucas numbers: G(1) = 1, G(2) = 3, G(k) = G(k-1) + G(k-2)
+        long[] G = new long[Math.max(n + 1, 3)];
+        G[1] = 1;
+        G[2] = 3;
+        for (int i = 3; i <= n; i++) {
+            G[i] = (G[i - 1] + G[i - 2]) % MOD;
+        }
+
+        boolean[] visited = new boolean[n];
+        long totalWays = 1;
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                int cycleLength = 0;
+                int currentCoin = i;
+
+                // Traverse the cycle component
+                while (!visited[currentCoin]) {
+                    visited[currentCoin] = true;
+                    cycleLength++;
+
+                    int valueOnBack = Q[currentCoin];
+                    currentCoin = posInP[valueOnBack];
+                }
+
+                // Multiply total ways by ways to cover this cycle of length L
+                totalWays = (totalWays * G[cycleLength]) % MOD;
+            }
+        }
+
+        return (int) totalWays;
+    }
+
+    public static void main(String[] args) throws IOException {
+        FastScanner scanner = new FastScanner();
+        Integer nObj = scanner.nextInt();
+        if (nObj == null) return;
+        int n = nObj;
+
+        int[] P = new int[n];
+        int[] Q = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            P[i] = scanner.nextInt();
+        }
+        for (int i = 0; i < n; i++) {
+            Q[i] = scanner.nextInt();
+        }
+
+        int result = userLogic(n, P, Q);
+        System.out.println(result);
+    }
+
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        String next() {
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    String line = br.readLine();
+                    if (line == null) return null;
+                    st = new StringTokenizer(line);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        Integer nextInt() {
+            String str = next();
+            if (str == null) return null;
+            return Integer.parseInt(str);
+        }
+    }
+}
