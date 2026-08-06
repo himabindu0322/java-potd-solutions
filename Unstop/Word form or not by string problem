@@ -1,0 +1,73 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Recursive backtracking method to check if 'target' can be formed
+     * using available characters in 's'.
+     */
+    private static boolean backtrack(String target, int index, String s, boolean[] used) {
+        if (index == target.length()) {
+            return true;
+        }
+
+        char ch = target.charAt(index);
+
+        for (int i = 0; i < s.length(); i++) {
+            if (!used[i] && s.charAt(i) == ch) {
+                // 1. Choose
+                used[i] = true;
+
+                // 2. Explore
+                if (backtrack(target, index + 1, s, used)) {
+                    return true;
+                }
+
+                // 3. Un-choose (Backtrack)
+                used[i] = false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean canFormStrings(String s, List<String> arr) {
+        if (s == null) s = "";
+
+        for (String target : arr) {
+            if (target == null) continue;
+
+            // Fast pruning: target cannot be longer than source string S
+            if (target.length() > s.length()) {
+                return false;
+            }
+
+            boolean[] used = new boolean[s.length()];
+            if (!backtrack(target, 0, s, used)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        if (!scanner.hasNext()) {
+            System.out.println("false");
+            return;
+        }
+
+        String s = scanner.next();
+        int n = scanner.nextInt();
+
+        List<String> arr = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            arr.add(scanner.next()); // Reads space-separated strings cleanly
+        }
+
+        boolean result = canFormStrings(s, arr);
+        System.out.println(result ? "true" : "false");
+    }
+}
