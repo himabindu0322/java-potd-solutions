@@ -1,0 +1,24 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+
+    public static int countVIPGuests(String vipGuests, String attendees) {
+        // Store all unique VIP character types in a HashSet for O(1) lookups
+        Set<Character> vipSet = new HashSet<>();
+        for (char c : vipGuests.toCharArray()) {
+            vipSet.add(c);
+        }
+
+        int count = 0;
+
+        // Count how many attendee characters are in the VIP set
+        for (char c : attendees.toCharArray()) {
+            if (vipSet.contains(c)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
