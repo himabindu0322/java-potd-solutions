@@ -1,0 +1,62 @@
+class Solution {
+    // DSU helper class
+    private static class DSU {
+        private final int[] parent;
+        private final int[] rank;
+        private int components;
+
+        public DSU(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            components = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void union(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+
+            if (rootI != rootJ) {
+                // Union by rank
+                if (rank[rootI] < rank[rootJ]) {
+                    parent[rootI] = rootJ;
+                } else if (rank[rootI] > rank[rootJ]) {
+                    parent[rootJ] = rootI;
+                } else {
+                    parent[rootJ] = rootI;
+                    rank[rootI]++;
+                }
+                components--; // Reduce component count on successful union
+            }
+        }
+
+        public int getComponents() {
+            return components;
+        }
+    }
+
+    public int minEdgesReq(int n, int[][] edges) {
+        // Step 1: Check if there are enough edges to form a tree of n vertices
+        if (edges.length < n - 1) {
+            return -1;
+        }
+
+        // Step 2: Use DSU to count connected components
+        DSU dsu = new DSU(n);
+        for (int[] edge : edges) {
+            dsu.union(edge[0], edge[1]);
+        }
+
+        // Step 3: Operations needed = (number of components) - 1
+        return dsu.getComponents() - 1;
+    }
+}
