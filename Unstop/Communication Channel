@@ -1,0 +1,79 @@
+import java.util.Scanner;
+
+public class Main {
+    private static final int MOD = 1000000007;
+
+    public static int countDistinctNetworkDesigns(int N, int K) {
+        if (N <= 1) return 1;
+
+        int numVertices = N - 1; // departments 2 to N
+
+        // Precompute factorials and inverse factorials
+        long[] fact = new long[N + 1];
+        long[] invFact = new long[N + 1];
+        fact[0] = 1;
+        invFact[0] = 1;
+        for (int i = 1; i <= N; i++) {
+            fact[i] = (fact[i - 1] * i) % MOD;
+        }
+        invFact[N] = power(fact[N], MOD - 2);
+        for (int i = N - 1; i >= 1; i--) {
+            invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;
+        }
+
+        // dp[rem] = number of valid edge configurations for 'rem' vertices
+        // assigned weight values strictly less than current level x
+        long[] dp = new long[N];
+        dp[0] = 1; 
+
+        // Process weight levels x from 1 up to K
+        for (int x = 1; x <= K; x++) {
+            long[] nextDp = new long[N];
+            long choices = K - x + 1; // choices for w(u, v) >= max(w(1, u), w(1, v))
+
+            for (int rem = 0; rem < N; rem++) {
+                if (dp[rem] == 0) continue;
+
+                // Assign 'c' vertices to have weight w(1, v) = x
+                for (int c = 0; rem + c < N; c++) {
+                    // Edges constrained by weight level x:
+                    // 1. Edges between the c vertices: c*(c-1)/2
+                    // 2. Edges between c vertices and the rem vertices (whose weight < x): c*rem
+                    long internalEdges = (long) c * (c - 1) / 2 + (long) c * rem;
+                    long internalWays = power(choices, internalEdges);
+
+                    long ways = (dp[rem] * internalWays) % MOD;
+                    ways = (ways * invFact[c]) % MOD;
+
+                    nextDp[rem + c] = (nextDp[rem + c] + ways) % MOD;
+                }
+            }
+            dp = nextDp;
+        }
+
+        // Multiply by (N - 1)! for multinomial permutations
+        long result = (dp[numVertices] * fact[numVertices]) % MOD;
+        return (int) result;
+    }
+
+    private static long power(long base, long exp) {
+        long res = 1;
+        base %= MOD;
+        while (exp > 0) {
+            if ((exp & 1) == 1) res = (res * base) % MOD;
+            base = (base * base) % MOD;
+            exp >>= 1;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int N = sc.nextInt();
+            int K = sc.nextInt();
+            int result = countDistinctNetworkDesigns(N, K);
+            System.out.println(result);
+        }
+    }
+}
