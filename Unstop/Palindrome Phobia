@@ -1,0 +1,52 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+    private static final int MOD = 1000000007;
+    private static Integer[][][][] dp;
+
+    public static int palindromePhobia(int n, String s) {
+        // dp dimensions: index (0..n), prev1 (0..26), prev2 (0..26), isGreater (0..1)
+        dp = new Integer[n + 1][27][27][2];
+        return solve(0, 26, 26, 0, n, s);
+    }
+
+    private static int solve(int index, int prev1, int prev2, int isGreater, int n, String s) {
+        if (index == n) {
+            return isGreater; // Valid iff strictly greater than s
+        }
+
+        if (dp[index][prev1][prev2][isGreater] != null) {
+            return dp[index][prev1][prev2][isGreater];
+        }
+
+        long count = 0;
+        char minChar = (isGreater == 1) ? 'a' : s.charAt(index);
+
+        for (char c = minChar; c <= 'z'; c++) {
+            int charVal = c - 'a';
+
+            // No palindromes of length 2 or 3
+            if (charVal == prev1 || charVal == prev2) {
+                continue;
+            }
+
+            int nextIsGreater = (isGreater == 1 || c > s.charAt(index)) ? 1 : 0;
+
+            count = (count + solve(index + 1, charVal, prev1, nextIsGreater, n, s)) % MOD;
+        }
+
+        return dp[index][prev1][prev2][isGreater] = (int) count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            String s = scanner.next();
+            int result = palindromePhobia(n, s);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
