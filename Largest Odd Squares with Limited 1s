@@ -1,0 +1,61 @@
+import java.util.ArrayList;
+
+class Solution {
+    public ArrayList<Integer> largestSquare(int[][] mat, int[][] queries, int k) {
+        int n = mat.length;
+        int m = mat[0].length;
+        
+        // 2D Prefix Sum array
+        int[][] pref = new int[n + 1][m + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                pref[i + 1][j + 1] = mat[i][j] + pref[i][j + 1] + pref[i + 1][j] - pref[i][j];
+            }
+        }
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        
+        for (int[] q : queries) {
+            int r = q[0];
+            int c = q[1];
+            
+            // Check if even the single 1x1 center cell exceeds k ones
+            if (mat[r][c] > k) {
+                result.add(-1);
+                continue;
+            }
+            
+            // Maximum radius d such that cell (r - d, c - d) and (r + d, c + d) stay within matrix
+            int maxD = Math.min(Math.min(r, n - 1 - r), Math.min(c, m - 1 - c));
+            
+            int low = 0;
+            int high = maxD;
+            int bestRadius = 0;
+            
+            // Binary search for the maximum valid radius
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                
+                int r1 = r - mid;
+                int c1 = c - mid;
+                int r2 = r + mid;
+                int c2 = c + mid;
+                
+                // Count ones in submatrix [r1..r2][c1..c2]
+                int onesCount = pref[r2 + 1][c2 + 1] - pref[r1][c2 + 1] - pref[r2 + 1][c1] + pref[r1][c1];
+                
+                if (onesCount <= k) {
+                    bestRadius = mid;
+                    low = mid + 1; // Try expanding further
+                } else {
+                    high = mid - 1; // Decrease radius
+                }
+            }
+            
+            // Side length = 2 * bestRadius + 1
+            result.add(2 * bestRadius + 1);
+        }
+        
+        return result;
+    }
+}
