@@ -1,0 +1,29 @@
+public class Solution {
+
+    public static void printWellFormedParanthesis(int n) {
+        // Start backtracking with empty string, 0 open, and 0 close
+        backtrack(n, 0, 0, new StringBuilder());
+    }
+
+    private static void backtrack(int n, int open, int close, StringBuilder current) {
+        // Base case: if we have added n open and n close brackets
+        if (open == n && close == n) {
+            System.out.println(current.toString());
+            return;
+        }
+
+        // Add an open bracket if we haven't reached n
+        if (open < n) {
+            current.append('(');
+            backtrack(n, open + 1, close, current);
+            current.deleteCharAt(current.length() - 1); // backtrack
+        }
+
+        // Add a close bracket if it won't exceed open brackets
+        if (close < open) {
+            current.append(')');
+            backtrack(n, open, close + 1, current);
+            current.deleteCharAt(current.length() - 1); // backtrack
+        }
+    }
+}
