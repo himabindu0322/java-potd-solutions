@@ -1,0 +1,116 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static class State implements Comparable<State> {
+        String str;
+        int time;
+
+        State(String str, int time) {
+            this.str = str;
+            this.time = time;
+        }
+
+        @Override
+        public int compareTo(State o) {
+            return Integer.compare(this.time, o.time);
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        if (!scanner.hasNextLine()) {
+            System.out.println(-1);
+            return;
+        }
+        
+        String currentState = scanner.nextLine().trim();
+        if (!scanner.hasNextLine()) {
+            System.out.println(-1);
+            return;
+        }
+        String desiredState = scanner.nextLine().trim();
+        if (!scanner.hasNextLine()) {
+            System.out.println(-1);
+            return;
+        }
+        String alterablePositions = scanner.nextLine().trim();
+
+        // Length validation
+        int n = currentState.length();
+        if (n == 0 || desiredState.length() != n || alterablePositions.length() != n) {
+            System.out.println(-1);
+            return;
+        }
+
+        // Validate character constraints
+        for (int i = 0; i < n; i++) {
+            char c1 = currentState.charAt(i);
+            char c2 = desiredState.charAt(i);
+            char ap = alterablePositions.charAt(i);
+
+            if (c1 < 'a' || c1 > 'z' || c2 < 'a' || c2 > 'z') {
+                System.out.println(-1);
+                return;
+            }
+            if (ap != '0' && ap != '1') {
+                System.out.println(-1);
+                return;
+            }
+        }
+
+        // Dijkstra's Algorithm
+        PriorityQueue<State> pq = new PriorityQueue<>();
+        Map<String, Integer> dist = new HashMap<>();
+
+        pq.add(new State(currentState, 0));
+        dist.put(currentState, 0);
+
+        while (!pq.isEmpty()) {
+            State current = pq.poll();
+            String u = current.str;
+            int time = current.time;
+
+            if (u.equals(desiredState)) {
+                System.out.println(time);
+                return;
+            }
+
+            if (time > dist.getOrDefault(u, Integer.MAX_VALUE)) {
+                continue;
+            }
+
+            // 1. Rotate Clockwise by 1 step (Cost: 2s)
+            String rotClockwise = u.charAt(n - 1) + u.substring(0, n - 1);
+            if (time + 2 < dist.getOrDefault(rotClockwise, Integer.MAX_VALUE)) {
+                dist.put(rotClockwise, time + 2);
+                pq.add(new State(rotClockwise, time + 2));
+            }
+
+            // 2. Rotate Counterclockwise by 1 step (Cost: 2s)
+            String rotCounterClockwise = u.substring(1) + u.charAt(0);
+            if (time + 2 < dist.getOrDefault(rotCounterClockwise, Integer.MAX_VALUE)) {
+                dist.put(rotCounterClockwise, time + 2);
+                pq.add(new State(rotCounterClockwise, time + 2));
+            }
+
+            // 3. Alter Character at allowed positions (Cost: 3s per change)
+            for (int i = 0; i < n; i++) {
+                if (alterablePositions.charAt(i) == '1' && u.charAt(i) != desiredState.charAt(i)) {
+                    char[] charArray = u.toCharArray();
+                    charArray[i] = desiredState.charAt(i);
+                    String nextState = new String(charArray);
+
+                    if (time + 3 < dist.getOrDefault(nextState, Integer.MAX_VALUE)) {
+                        dist.put(nextState, time + 3);
+                        pq.add(new State(nextState, time + 3));
+                    }
+                }
+            }
+        }
+
+        System.out.println(-1);
+    }
+}
