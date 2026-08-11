@@ -1,0 +1,55 @@
+import java.util.*;
+
+public class Main {
+    public static int illusion_of_array(int n, int[] arr) {
+        long MOD = 1000000007L;
+        int[] left = new int[n];  // Distance to Previous Less Element
+        int[] right = new int[n]; // Distance to Next Less or Equal Element
+        
+        Stack<Integer> stack = new Stack<>();
+
+        // Find Previous Less Element (PLE)
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                stack.pop();
+            }
+            left[i] = stack.isEmpty() ? (i + 1) : (i - stack.peek());
+            stack.push(i);
+        }
+
+        stack.clear();
+
+        // Find Next Less or Equal Element (NLE)
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? (n - i) : (stack.peek() - i);
+            stack.push(i);
+        }
+
+        // Calculate the total contribution of each element
+        long totalSum = 0;
+        for (int i = 0; i < n; i++) {
+            long count = ((long) left[i] * right[i]) % MOD;
+            long contribution = (count * arr[i]) % MOD;
+            totalSum = (totalSum + contribution) % MOD;
+        }
+
+        return (int) totalSum;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = scanner.nextInt();
+            }
+            int result = illusion_of_array(n, arr);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
