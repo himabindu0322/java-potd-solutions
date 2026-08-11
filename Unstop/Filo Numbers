@@ -1,0 +1,33 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int countFiloWays(int n) {
+        int count = 0;
+
+        // Iterate up to sqrt(N) to find all odd divisors of N
+        for (int d = 1; d * d <= n; d++) {
+            if (n % d == 0) {
+                // Check if the divisor d is odd
+                if (d % 2 != 0) {
+                    count++;
+                }
+                // Check if the complementary divisor (n / d) is odd and distinct
+                if (d * d != n && (n / d) % 2 != 0) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int result = countFiloWays(n);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
