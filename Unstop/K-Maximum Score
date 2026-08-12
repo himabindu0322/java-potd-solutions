@@ -1,0 +1,59 @@
+import java.util.*;
+
+public class Main {
+    public static long solve(List<Integer> nums) {
+        int n = nums.size();
+        long count = 0;
+        
+        // Track frequency of set bits across the current window
+        int[] bitCounts = new int[21]; 
+        int left = 0;
+
+        for (int right = 0; right < n; right++) {
+            int num = nums.get(right);
+
+            // Add bits of nums[right] to bitCounts
+            for (int b = 0; b < 21; b++) {
+                if (((num >> b) & 1) == 1) {
+                    bitCounts[b]++;
+                }
+            }
+
+            // Shrink window from the left if any bit is shared by > 1 element
+            while (hasConflict(bitCounts)) {
+                int leftNum = nums.get(left);
+                for (int b = 0; b < 21; b++) {
+                    if (((leftNum >> b) & 1) == 1) {
+                        bitCounts[b]--;
+                    }
+                }
+                left++;
+            }
+
+            // Count valid subarrays ending at 'right' with length >= 2
+            count += (right - left);
+        }
+
+        return count;
+    }
+
+    private static boolean hasConflict(int[] bitCounts) {
+        for (int count : bitCounts) {
+            if (count > 1) return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            List<Integer> v = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                v.add(scanner.nextInt());
+            }
+            System.out.println(solve(v));
+        }
+        scanner.close();
+    }
+}
