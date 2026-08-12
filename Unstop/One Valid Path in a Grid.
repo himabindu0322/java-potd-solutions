@@ -1,0 +1,70 @@
+import java.util.*;
+
+public class Main {
+    // Direction vectors: {row_offset, col_offset, direction_code}
+    // 1: Right, 2: Left, 3: Down, 4: Up
+    static int[][] dirs = {{0, 1, 1}, {0, -1, 2}, {1, 0, 3}, {-1, 0, 4}};
+
+    public static int minCost(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        int[][] dist = new int[m][n];
+        for (int[] row : dist) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+
+        Deque<int[]> deque = new ArrayDeque<>();
+        deque.addFirst(new int[]{0, 0});
+        dist[0][0] = 0;
+
+        while (!deque.isEmpty()) {
+            int[] curr = deque.pollFirst();
+            int r = curr[0];
+            int c = curr[1];
+
+            if (r == m - 1 && c == n - 1) {
+                return dist[r][c];
+            }
+
+            for (int[] dir : dirs) {
+                int nr = r + dir[0];
+                int nc = c + dir[1];
+                int dirCode = dir[2];
+
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n) {
+                    // Cost is 0 if moving in the sign's direction, else 1
+                    int cost = (grid[r][c] == dirCode) ? 0 : 1;
+
+                    if (dist[r][c] + cost < dist[nr][nc]) {
+                        dist[nr][nc] = dist[r][c] + cost;
+
+                        if (cost == 0) {
+                            deque.addFirst(new int[]{nr, nc}); // 0 weight -> push front
+                        } else {
+                            deque.addLast(new int[]{nr, nc});  // 1 weight -> push back
+                        }
+                    }
+                }
+            }
+        }
+
+        return dist[m - 1][n - 1];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int m = scanner.nextInt();
+            int[][] grid = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    grid[i][j] = scanner.nextInt();
+                }
+            }
+            System.out.println(minCost(grid));
+        }
+        scanner.close();
+    }
+}
