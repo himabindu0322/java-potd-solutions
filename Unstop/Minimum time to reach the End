@@ -1,0 +1,63 @@
+import java.util.*;
+
+public class Main {
+    static int minimum_time_to_clear_game(int[][] matrix) {
+        int n = matrix.length;
+        
+        // Priority Queue stores triples: {max_time_so_far, row, col}
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        boolean[][] visited = new boolean[n][n];
+
+        pq.offer(new int[]{matrix[0][0], 0, 0});
+        visited[0][0] = true;
+
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int time = curr[0];
+            int r = curr[1];
+            int c = curr[2];
+
+            // Destination reached
+            if (r == n - 1 && c == n - 1) {
+                return time;
+            }
+
+            for (int[] dir : dirs) {
+                int nr = r + dir[0];
+                int nc = c + dir[1];
+
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
+                    visited[nr][nc] = true;
+                    // The time needed to enter the neighbor is max(time_so_far, matrix[nr][nc])
+                    pq.offer(new int[]{Math.max(time, matrix[nr][nc]), nr, nc});
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int[] elements = new int[n * n];
+            for (int i = 0; i < n * n; i++) {
+                elements[i] = scanner.nextInt();
+            }
+            
+            int[][] matrix = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    matrix[i][j] = elements[i * n + j];
+                }
+            }
+            
+            int result = minimum_time_to_clear_game(matrix);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
