@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Main {
+    public static void processQueries(List<Map.Entry<String, Double>> queries, List<Double> results) {
+        // Max-heap stores the smaller half of the numbers
+        PriorityQueue<Double> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        // Min-heap stores the larger half of the numbers
+        PriorityQueue<Double> minHeap = new PriorityQueue<>();
+
+        for (Map.Entry<String, Double> query : queries) {
+            String type = query.getKey();
+
+            if (type.equals("add")) {
+                double val = query.getValue();
+                
+                // Add to maxHeap first
+                maxHeap.add(val);
+
+                // Rebalance: Ensure all elements in maxHeap <= all elements in minHeap
+                minHeap.add(maxHeap.poll());
+
+                // Keep maxHeap size equal to or 1 greater than minHeap size
+                if (maxHeap.size() < minHeap.size()) {
+                    maxHeap.add(minHeap.poll());
+                }
+            } else if (type.equals("get")) {
+                // Calculate median
+                if (maxHeap.size() > minHeap.size()) {
+                    results.add(maxHeap.peek());
+                } else {
+                    results.add((maxHeap.peek() + minHeap.peek()) / 2.0);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        
+        int k = scanner.nextInt();
+        scanner.nextLine();
+        List<Map.Entry<String, Double>> queries = new ArrayList<>();
+
+        for (int i = 0; i < k; i++) {
+            if (!scanner.hasNextLine()) break;
+            String[] line = scanner.nextLine().trim().split("\\s+");
+            String queryType = line[0];
+
+            if (queryType.equals("add")) {
+                double value = Double.parseDouble(line[1]);
+                queries.add(new AbstractMap.SimpleEntry<>(queryType, value));
+            } else if (queryType.equals("get")) {
+                queries.add(new AbstractMap.SimpleEntry<>(queryType, null));
+            }
+        }
+
+        List<Double> results = new ArrayList<>();
+        processQueries(queries, results);
+
+        for (double result : results) {
+            System.out.printf("%.1f\n", result);
+        }
+
+        scanner.close();
+    }
+}
