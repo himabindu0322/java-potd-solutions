@@ -1,0 +1,109 @@
+import java.util.*;
+
+public class Main {
+    private static final int MOD = 998244353;
+    private static final int MAX_FACT = 3005;
+    private static long[] fact = new long[MAX_FACT];
+    private static long[] invFact = new long[MAX_FACT];
+
+    // Precompute Factorials and Inverse Factorials for O(1) nCr
+    static {
+        fact[0] = 1;
+        invFact[0] = 1;
+        for (int i = 1; i < MAX_FACT; i++) {
+            fact[i] = (fact[i - 1] * i) % MOD;
+        }
+        invFact[MAX_FACT - 1] = modInverse(fact[MAX_FACT - 1], MOD);
+        for (int i = MAX_FACT - 2; i >= 1; i--) {
+            invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;
+        }
+    }
+
+    public static int user_logic(int n, int m, int x) {
+        // Upper bound for XOR values (2^11 = 2048 covers elements <= 2000)
+        int maxXor = 2048;
+
+        // Impossible target check
+        if (x >= maxXor) {
+            return 0;
+        }
+
+        int maxK = Math.min(n, m + 1);
+        int[][] dp = new int[maxXor][maxK + 1];
+        dp[0][0] = 1;
+
+        // DP State: dp[j][k] = count of subsets with XOR sum 'j' and size 'k'
+        for (int v = 0; v <= m; v++) {
+            int[][] nextDp = new int[maxXor][maxK + 1];
+            for (int j = 0; j < maxXor; j++) {
+                for (int k = 0; k <= maxK; k++) {
+                    if (dp[j][k] == 0) continue;
+
+                    // Option 1: Do not pick v to have odd count
+                    nextDp[j][k] = (nextDp[j][k] + dp[j][k]) % MOD;
+
+                    // Option 2: Pick v to have odd count
+                    if (k + 1 <= maxK) {
+                        int nextJ = j ^ v;
+                        if (nextJ < maxXor) {
+                            nextDp[nextJ][k + 1] = (nextDp[nextJ][k + 1] + dp[j][k]) % MOD;
+                        }
+                    }
+                }
+            }
+            dp = nextDp;
+        }
+
+        // Combine DP results with Stars and Bars formula
+        long totalWays = 0;
+
+        for (int k = 0; k <= maxK; k++) {
+            if (n < k || (n - k) % 2 != 0) continue;
+
+            int waysToChooseK = dp[x][k];
+            if (waysToChooseK == 0) continue;
+
+            int s = (n - k) / 2;
+            long starsAndBars = nCr(s + m, m);
+
+            long currentWays = (waysToChooseK * starsAndBars) % MOD;
+            totalWays = (totalWays + currentWays) % MOD;
+        }
+
+        return (int) totalWays;
+    }
+
+    // Fast O(1) nCr calculation
+    private static long nCr(int n, int r) {
+        if (r < 0 || r > n) return 0;
+        return fact[n] * invFact[r] % MOD * invFact[n - r] % MOD;
+    }
+
+    // Modular Inverse using Fermat's Little Theorem
+    private static long modInverse(long a, int m) {
+        return power(a, m - 2, m);
+    }
+
+    private static long power(long base, long exp, int mod) {
+        long res = 1;
+        base %= mod;
+        while (exp > 0) {
+            if (exp % 2 == 1) res = (res * base) % mod;
+            base = (base * base) % mod;
+            exp /= 2;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            int m = scanner.nextInt();
+            int x = scanner.nextInt();
+
+            System.out.println(user_logic(n, m, x));
+        }
+        scanner.close();
+    }
+}
