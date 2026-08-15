@@ -1,0 +1,59 @@
+import java.util.Scanner;
+
+public class Main {
+    static final int MOD = 1000000007;
+
+    public static int num_of_arrays(int n, int m, int k) {
+        if (k == 0 || k > m || k > n) {
+            return 0;
+        }
+
+        // dp[i][j][cost]: length i, max value j, search cost cost
+        long[][][] dp = new long[n + 1][m + 1][k + 1];
+
+        // Base case: length 1
+        for (int j = 1; j <= m; j++) {
+            dp[1][j][1] = 1;
+        }
+
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                for (int cost = 1; cost <= k; cost++) {
+
+                    // Case 1: New element <= current max 'j'
+                    // We can choose any value from 1 to j (j choices)
+                    long ways = (dp[i - 1][j][cost] * j) % MOD;
+
+                    // Case 2: New element is 'j', which is strictly > prev_max
+                    // prev_max can be any value from 1 to j-1, and cost increases by 1
+                    for (int prevMax = 1; prevMax < j; prevMax++) {
+                        ways = (ways + dp[i - 1][prevMax][cost - 1]) % MOD;
+                    }
+
+                    dp[i][j][cost] = ways;
+                }
+            }
+        }
+
+        // Sum up ways for all possible max values j with length n and cost k
+        long ans = 0;
+        for (int j = 1; j <= m; j++) {
+            ans = (ans + dp[n][j][k]) % MOD;
+        }
+
+        return (int) ans;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int n = sc.nextInt();
+            int m = sc.nextInt();
+            int k = sc.nextInt();
+
+            int result = num_of_arrays(n, m, k);
+            System.out.println(result);
+        }
+        sc.close();
+    }
+}
