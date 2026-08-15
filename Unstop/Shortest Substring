@@ -1,0 +1,66 @@
+import java.util.Scanner;
+
+public class Main {
+    public static int shortestSubstringLength(String S, String L) {
+        if (S == null || L == null || S.length() < L.length() || L.length() == 0) {
+            return -1;
+        }
+
+        int[] targetFreq = new int[256];
+        for (int i = 0; i < L.length(); i++) {
+            targetFreq[L.charAt(i)]++;
+        }
+
+        int requiredCount = 0;
+        for (int count : targetFreq) {
+            if (count > 0) {
+                requiredCount++;
+            }
+        }
+
+        int[] windowFreq = new int[256];
+        int formed = 0;
+        int left = 0;
+        int minLen = Integer.MAX_VALUE;
+
+        for (int right = 0; right < S.length(); right++) {
+            char c = S.charAt(right);
+            windowFreq[c]++;
+
+            if (targetFreq[c] > 0 && windowFreq[c] == targetFreq[c]) {
+                formed++;
+            }
+
+            // Shrink window from the left as long as all characters are present
+            while (left <= right && formed == requiredCount) {
+                char leftChar = S.charAt(left);
+
+                int windowSize = right - left + 1;
+                if (windowSize < minLen) {
+                    minLen = windowSize;
+                }
+
+                windowFreq[leftChar]--;
+                if (targetFreq[leftChar] > 0 && windowFreq[leftChar] < targetFreq[leftChar]) {
+                    formed--;
+                }
+                left++;
+            }
+        }
+
+        return minLen == Integer.MAX_VALUE ? -1 : minLen;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String S = scanner.nextLine();
+            if (scanner.hasNextLine()) {
+                String L = scanner.nextLine();
+                int result = shortestSubstringLength(S, L);
+                System.out.println(result);
+            }
+        }
+        scanner.close();
+    }
+}
