@@ -1,0 +1,85 @@
+import java.util.*;
+
+public class Main {
+
+    static class DSU {
+        int[] parent;
+        int count;
+
+        public DSU(int n) {
+            this.count = n;
+            parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i)
+                return i;
+            return parent[i] = find(parent[i]);
+        }
+
+        public void union(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            if (rootI != rootJ) {
+                parent[rootI] = rootJ;
+                count--;
+            }
+        }
+    }
+
+    private static boolean isSimilar(String s1, String s2) {
+        if (s1.equals(s2)) {
+            return true;
+        }
+
+        int diff = 0;
+        int len = s1.length();
+
+        for (int i = 0; i < len; i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                diff++;
+                if (diff > 4) {
+                    return false; // Early exit if differences exceed 4
+                }
+            }
+        }
+
+        return diff == 4;
+    }
+
+    public static int getAnagramGroups(List<String> strs) {
+        if (strs == null || strs.isEmpty()) {
+            return 0;
+        }
+
+        int n = strs.size();
+        DSU dsu = new DSU(n);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (isSimilar(strs.get(i), strs.get(j))) {
+                    dsu.union(i, j);
+                }
+            }
+        }
+
+        return dsu.count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            List<String> arr = new ArrayList<>();
+            for (int i = 0; i < n; ++i) {
+                arr.add(scanner.next());
+            }
+            int groups = getAnagramGroups(arr);
+            System.out.println(groups);
+        }
+        scanner.close();
+    }
+}
