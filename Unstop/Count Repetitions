@@ -1,0 +1,80 @@
+import java.util.*;
+
+public class Main {
+
+    public static int numberOfDaysWhenSubsequence(String S, String T) {
+        if (S == null || T == null || S.isEmpty() || T.isEmpty()) {
+            return -1;
+        }
+
+        // Store 0-based indices for each character present in S
+        List<List<Integer>> pos = new ArrayList<>(256);
+        for (int i = 0; i < 256; i++) {
+            pos.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < S.length(); i++) {
+            pos.get(S.charAt(i)).add(i);
+        }
+
+        // Quick check: If T contains a character not in S, return -1
+        for (int i = 0; i < T.length(); i++) {
+            if (pos.get(T.charAt(i)).isEmpty()) {
+                return -1;
+            }
+        }
+
+        int days = 1;
+        int lastPos = -1; // Last matched index in S
+
+        for (int i = 0; i < T.length(); i++) {
+            char c = T.charAt(i);
+            List<Integer> list = pos.get(c);
+
+            // Find the smallest index in list strictly greater than lastPos
+            int idx = findNextPos(list, lastPos);
+
+            if (idx == -1) {
+                // Character c cannot be found after lastPos in current copy of S
+                // Move to the next day (next copy of S)
+                days++;
+                lastPos = list.get(0); // Take the first occurrence in the new copy of S
+            } else {
+                lastPos = idx;
+            }
+        }
+
+        return days;
+    }
+
+    // Binary search to find the smallest index in 'list' strictly > 'lastPos'
+    private static int findNextPos(List<Integer> list, int lastPos) {
+        int low = 0, high = list.size() - 1;
+        int ans = -1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (list.get(mid) > lastPos) {
+                ans = list.get(mid);
+                high = mid - 1; // Try to find a smaller valid index
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNext()) {
+            String S = scanner.next();
+            if (scanner.hasNext()) {
+                String T = scanner.next();
+                int result = numberOfDaysWhenSubsequence(S, T);
+                System.out.println(result);
+            }
+        }
+        scanner.close();
+    }
+}
