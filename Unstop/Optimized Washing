@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Main {
+    public static long minimumCost(int N, int S, int[] time, int[] cost) {
+        long[] prefTime = new long[N + 1];
+        long[] suffCost = new long[N + 1];
+
+        for (int i = 0; i < N; i++) {
+            prefTime[i + 1] = prefTime[i] + time[i];
+        }
+
+        for (int i = N - 1; i >= 0; i--) {
+            suffCost[i] = suffCost[i + 1] + cost[i];
+        }
+
+        // dp[i] = min cost to process items from index i to N-1
+        long[] dp = new long[N + 1];
+        dp[N] = 0;
+
+        for (int i = N - 1; i >= 0; i--) {
+            dp[i] = Long.MAX_VALUE;
+            for (int j = i + 1; j <= N; j++) {
+                long currentCost = dp[j] + (prefTime[j] - prefTime[i] + S) * suffCost[i];
+                dp[i] = Math.min(dp[i], currentCost);
+            }
+        }
+
+        return dp[0];
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int N = sc.nextInt();
+            int S = sc.nextInt();
+            int[] time = new int[N];
+            int[] cost = new int[N];
+            for (int i = 0; i < N; i++) {
+                time[i] = sc.nextInt();
+            }
+            for (int i = 0; i < N; i++) {
+                cost[i] = sc.nextInt();
+            }
+            System.out.println(minimumCost(N, S, time, cost));
+        }
+        sc.close();
+    }
+}
