@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class Main {
+    static List<Long> inOrderList;
+
+    static void inOrder(long[] arr, int index, int n) {
+        if (index >= n) return;
+        
+        // Left child
+        inOrder(arr, 2 * index + 1, n);
+        
+        // Current node
+        inOrderList.add(arr[index]);
+        
+        // Right child
+        inOrder(arr, 2 * index + 2, n);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int n = sc.nextInt();
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextLong();
+        }
+
+        // Step 1: Perform In-Order Traversal
+        inOrderList = new ArrayList<>();
+        inOrder(arr, 0, n);
+
+        int size = inOrderList.size();
+        long[] b = new long[size];
+        for (int i = 0; i < size; i++) {
+            b[i] = inOrderList.get(i) - i;
+        }
+
+        // Step 2: Running max for non-decreasing order using only increments
+        long ops = 0;
+        long currentMax = b[0];
+
+        for (int i = 1; i < size; i++) {
+            if (b[i] < currentMax) {
+                ops += (currentMax - b[i]);
+            } else {
+                currentMax = b[i];
+            }
+        }
+
+        System.out.println(ops);
+        sc.close();
+    }
+}
