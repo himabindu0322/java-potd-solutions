@@ -1,0 +1,71 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        if (!sc.hasNextInt()) return;
+
+        int n = sc.nextInt();
+        int[][] grid = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] = sc.nextInt();
+            }
+        }
+
+        // Base case for n = 1
+        if (n == 1) {
+            System.out.println(grid[0][0]);
+            return;
+        }
+
+        // Track smallest and second smallest values from previous row
+        int prevMin1 = Integer.MAX_VALUE, prevMin2 = Integer.MAX_VALUE;
+        int prevMin1Col = -1;
+
+        // Initialize with the first row
+        for (int j = 0; j < n; j++) {
+            int val = grid[0][j];
+            if (prevMin1Col == -1 || val < prevMin1) {
+                prevMin2 = prevMin1;
+                prevMin1 = val;
+                prevMin1Col = j;
+            } else if (val < prevMin2) {
+                prevMin2 = val;
+            }
+        }
+
+        // Process remaining rows
+        for (int i = 1; i < n; i++) {
+            int currMin1 = Integer.MAX_VALUE;
+            int currMin2 = Integer.MAX_VALUE;
+            int currMin1Col = -1;
+
+            for (int j = 0; j < n; j++) {
+                // Choose previous row's minimum without taking same column
+                int minPrev = (j == prevMin1Col) ? prevMin2 : prevMin1;
+                int currSum = grid[i][j] + minPrev;
+
+                if (currMin1Col == -1 || currSum < currMin1) {
+                    currMin2 = currMin1;
+                    currMin1 = currSum;
+                    currMin1Col = j;
+                } else if (currSum < currMin2) {
+                    currMin2 = currSum;
+                }
+            }
+
+            // Update previous row tracker
+            prevMin1 = currMin1;
+            prevMin2 = currMin2;
+            prevMin1Col = currMin1Col;
+        }
+
+        System.out.println(prevMin1);
+        sc.close();
+    }
+}
