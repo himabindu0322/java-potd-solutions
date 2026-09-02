@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class Main {
+    public static int min_cost_to_move_to_queue(int[] pos) {
+        int evenCount = 0;
+        int oddCount = 0;
+
+        for (int p : pos) {
+            if (p % 2 == 0) {
+                evenCount++;
+            } else {
+                oddCount++;
+            }
+        }
+
+        return Math.min(evenCount, oddCount);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            int n = scanner.nextInt();  // First input is the integer n (length of array pos)
+            int[] pos = new int[n];
+            for (int i = 0; i < n; i++) {
+                pos[i] = scanner.nextInt();  // Remaining input is the array of positions
+            }
+            int result = min_cost_to_move_to_queue(pos);
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+}
